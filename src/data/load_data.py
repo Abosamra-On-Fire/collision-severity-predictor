@@ -1,8 +1,7 @@
 import pandas as pd
 import logging
 from pathlib import Path
-from typing import Optional, Union, List
-
+from typing import  Union
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

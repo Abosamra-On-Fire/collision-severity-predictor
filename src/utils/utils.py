@@ -47,6 +47,7 @@ def setup_logging(log_file: Path | str | None = None) -> logging.Logger:
         return logger
 
     logger.setLevel(logging.INFO)
+    logger.propagate = False
     fmt = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
 
     fh = logging.FileHandler(log_file, mode="a", encoding="utf-8")
