@@ -5,8 +5,10 @@ from sklearn.preprocessing import RobustScaler
 from sklearn.preprocessing import StandardScaler
 from sklearn.compose import ColumnTransformer
 from category_encoders import BinaryEncoder
-import pandas as pd
+from sklearn.feature_selection import VarianceThreshold
 
+import pandas as pd
+import numpy as np
 
 
 target_col = 'collision_severity'
@@ -30,7 +32,6 @@ numerical_cols = [
     'wx_cloud_cover',
 ]
 
-
 categorical_cols = [
     'day_of_week',
     'speed_limit',
@@ -51,8 +52,7 @@ categorical_cols = [
     'wx_weather_code',
     'wx_is_day']
 
-
-
+####################### Feature Interactions ####################
 def feature_interactions(
         df: pd.DataFrame
 ) -> pd.DataFrame:
@@ -71,6 +71,13 @@ def feature_interactions(
     (new_df['weather_conditions'] == 7).astype(int) * 0.2 
 )
     
+    numerical_cols.extend([
+        'casualties_per_vehicle',
+        'rain_intensity',
+        'wind_force',
+        'visibility_risk'
+    ])
+
     #? Boolean and Logical Combinations 
 
     new_df['is_bad_weather'] = (
@@ -81,19 +88,132 @@ def feature_interactions(
     
     return new_df
 
+####################### Feature Scaling ####################
 
-
-def feature_scaling(
+def feature_scaling_fit(
         df: pd.DataFrame
-) -> pd.DataFrame:
-    pass
+) -> ColumnTransformer:
+    robust_col = [ 
+    'number_of_vehicles',  
+    'number_of_casualties', 
+    'rain_intensity' 
+]
+    std_col = list(set(numerical_cols) - set(robust_col))
+    preprocessor = ColumnTransformer(
+    transformers=[
+        ('rob', RobustScaler(), robust_col),
+        ('std', StandardScaler(), std_col),
+        
+    ],
+    remainder='passthrough'
+)
+    preprocessor.set_output(transform="pandas")
+    preprocessor.fit(df)
+    return preprocessor
 
+
+def feature_scaling_transform(
+        df: pd.DataFrame,
+        preprocessor : ColumnTransformer
+) -> pd.DataFrame:
+    
+    new_df = df.copy()
+    new_df  = preprocessor.transform(new_df)
+    new_df.columns = [
+    col.split('__')[1] if '__' in col else col 
+    for col in new_df.columns
+]
+    return new_df
+
+
+####################### Feature Encoding ####################
+
+def feature_encoding_fit(
+        df: pd.DataFrame
+) -> BinaryEncoder:
+    preprocessor = BinaryEncoder(cols=categorical_cols)
+    preprocessor.set_output(transform="pandas")
+    preprocessor.fit(df)
+    return preprocessor
+
+
+def feature_encoding_transform(
+        df: pd.DataFrame,
+        preprocessor: BinaryEncoder
+)->pd.DataFrame: 
+    new_df=df.copy()
+    new_df = preprocessor.transform(new_df)
+    new_df.columns = [
+    col.split('__')[1] if '__' in col else col 
+    for col in new_df.columns
+]
+    return new_df
+
+
+####################### Feature Selection by variance thresholding ####################
+
+def variance_thresholding_fit(
+        df: pd.DataFrame,
+        min_variance : float
+) -> VarianceThreshold:
+    
+    selector = VarianceThreshold(threshold=min_variance)
+    df_numerical = df[numerical_cols]
+    selector.fit(df_numerical)
+    return selector
+
+
+def variance_thresholding_transform(
+        df: pd.DataFrame,
+        selector : VarianceThreshold
+) -> pd.DataFrame:
+    
+    new_df=df.copy()
+    df_numerical = new_df[numerical_cols]
+    df_numerical_selected = selector.transform(df_numerical)
+    mask = selector.get_support()
+    removed_cols = df_numerical.columns[~mask]
+    new_df=new_df.drop(columns=removed_cols)
+    return new_df , df_numerical_selected
+
+
+####################### Feature Selection by correlation ####################
+ 
 
 def main():
     df=load_csv(r"E:\Data_Science_Project\collision-severity-predictor\data\raw\accidents_with_weather.csv")
-    df_after_interactions = feature_interactions(df)
-    
 
+    X = df.drop(columns=[target_col])
+    y = df[target_col]
+
+    # Lazem asplit abl ay haga 3shan my7salsh leakage
+    # Hsplit le training set we validation set 80-20
+    X_train, X_val, y_train, y_val = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=42
+)
+    
+    X_train_with_interactions = feature_interactions(X_train)
+    X_val_with_interactions   = feature_interactions(X_val)
+
+    # Ht3lm el stats mnel training bs b3dha happly them 3la kolo
+    scaling_preprocessor = feature_scaling_fit (X_train_with_interactions)
+
+    X_train_scaled = feature_scaling_transform (X_train_with_interactions,scaling_preprocessor)
+    X_val_scaled = feature_scaling_transform (X_val_with_interactions,scaling_preprocessor)
+
+    # nfsel kalam brdo 3shan my7salsh leakage
+    encoding_preprocessor = feature_encoding_fit(X_train_scaled)
+
+    X_train_scaled_encoded = feature_encoding_transform(X_train_scaled,encoding_preprocessor)
+    X_val_scaled_encoded = feature_encoding_transform(X_val_scaled,encoding_preprocessor)
+
+    # nfsel kalam brdo 3shan my7salsh leakage
+    selector = variance_thresholding_fit(X_train_scaled,0.01)
+
+    X_train_after_variance_thresholding, X_train_selected_numerical = variance_thresholding_transform(X_train_scaled_encoded,selector)
+    X_val_after_variance_thresholding, X_val_selected_numerical = variance_thresholding_transform (X_val_scaled_encoded,selector)
+    
+    print(X_train_after_variance_thresholding.shape,X_val_after_variance_thresholding.shape)
 if __name__ == "__main__":
     main()
 
