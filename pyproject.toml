@@ -1,0 +1,42 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "collision_severity_predictor"
+version = "0.0.1"
+description = "tise porject aims to predict the severity of the collisions that takes place in the UK"
+authors = [
+  { name = "Team 3" },
+]
+
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    
+]
+requires-python = "~=3.12.0"
+
+
+[tool.ruff]
+line-length = 99
+src = ["collision_severity_predictor"]
+include = ["pyproject.toml", "collision_severity_predictor/**/*.py"]
+
+[tool.ruff.lint]
+extend-select = ["I"]  # Add import sorting
+
+[tool.ruff.lint.isort]
+known-first-party = ["collision_severity_predictor"]
+force-sort-within-sections = true
+
+
+[tool.poetry.dependencies]
+pandas = "^3.0.2"
+scikit-learn = "^1.8.0"
+category-encoders = "^2.9.0"
+plotly = "^6.7.0"
+imblearn = "^0.0"
+xgboost = "^3.2.0"
+torch = "^2.11.0"
+lightgbm = "^4.6.0"
