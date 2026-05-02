@@ -195,6 +195,48 @@ def correlation_based_selection (
     return X_reduced, kept_cols, list(to_drop)
 
 
+####################### Summary ####################
+
+
+def summarize(
+        df_before: pd.DataFrame,
+        df_after: pd.DataFrame,
+        save_path: str
+):
+
+    summary = []
+    summary.append(["rows", df_before.shape[0], df_after.shape[0]])
+    summary.append(["columns", df_before.shape[1], df_after.shape[1]])
+
+    
+
+
+
+
+
+    num_before = df_before.select_dtypes(include=np.number)
+    num_after = df_after.select_dtypes(include=np.number)
+
+    summary.append([
+        "mean_of_means",
+        num_before.mean().mean(),
+        num_after.mean().mean()
+    ])
+
+    summary.append([
+        "mean_of_stds",
+        num_before.std().mean(),
+        num_after.std().mean()
+    ])
+
+
+    summary_df = pd.DataFrame(summary, columns=["metric", "before", "after"])
+
+    summary_df.to_csv(save_path, index=False)
+
+
+####################### Main Pipeline ####################
+
 def main_features():
     target_col = cfg.TARGET_COL
     numerical_cols = cfg.NUMERICAL_COLS
@@ -284,5 +326,9 @@ def main_features():
     val_final.to_csv(val_path, index=False)
 
 
+    summarize(X_train,X_train_corr,rf"{cfg.REPORTS_DIR}/features_summary.csv")
+
+
+###########################################
 if __name__ == "__main__":
     main_features()
