@@ -11,7 +11,7 @@ from src import config as cfg
 from src.utils import (
     log_action,
     quarantine,
-    setup_logging,
+    save_stage_report,
 )
 
 logger = logging.getLogger("collision_severity_predictor")
@@ -27,6 +27,7 @@ def drop_unwanted_columns(df: pd.DataFrame) -> pd.DataFrame:
     df = df.drop(columns=present)
     log_action(
         step="Column Pruning",
+        stage="cleaning",
         rule="Admin / leakage columns",
         records_affected=len(present),
         action="Column deletion",
@@ -55,6 +56,7 @@ def cast_column_types(df: pd.DataFrame) -> pd.DataFrame:
         ).dt.time
         log_action(
             step="Consistency",
+            stage="cleaning",
             rule="time format",
             records_affected=len(df),
             action="Coerce to datetime.time",
@@ -79,13 +81,13 @@ def validate_accuracy(df: pd.DataFrame) -> pd.DataFrame:
         (df["latitude"]  < cfg.UK_LAT_MIN) | (df["latitude"]  > cfg.UK_LAT_MAX) |
         (df["longitude"] < cfg.UK_LON_MIN) | (df["longitude"] > cfg.UK_LON_MAX)
     )
-    df = quarantine(df, geo_mask, "latitude/longitude outside UK bounds")
+    df = quarantine(df, geo_mask, "latitude/longitude outside UK bounds", stage="cleaning")
 
     count_mask = (
         (df["number_of_vehicles"]  <= 0) |
         (df["number_of_casualties"] <= 0)
     )
-    df = quarantine(df, count_mask, "number_of_vehicles or number_of_casualties <= 0")
+    df = quarantine(df, count_mask, "number_of_vehicles or number_of_casualties <= 0", stage="cleaning")
 
     logger.info("After accuracy quarantine: %s", df.shape)
     return df
@@ -109,6 +111,7 @@ def fix_consistency(df: pd.DataFrame) -> pd.DataFrame:
             df[col] = df[col].replace(codes, np.nan)
             log_action(
                 step="Consistency",
+                stage="cleaning",
                 rule=f"{col} coded as {codes}",
                 records_affected=count,
                 action="Replace with NaN",
@@ -159,6 +162,7 @@ def handle_completeness(
         for col in params["cols_to_drop"]:
             log_action(
                 step="Completeness",
+                stage="cleaning",
                 rule=f"{col} {missing_rates[col]:.0%} missing",
                 records_affected=len(df),
                 action="Column deletion",
@@ -190,6 +194,7 @@ def handle_completeness(
             if fit:
                 log_action(
                     step="Completeness",
+                    stage="cleaning",
                     rule=f"{', '.join(low_missing_mcar)} missing",
                     records_affected=mcar_count,
                     action="Row deletion",
@@ -211,6 +216,7 @@ def handle_completeness(
                 if fit:
                     log_action(
                         step="Completeness",
+                        stage="cleaning",
                         rule=f"{col} missing",
                         records_affected=n_miss,
                         action="Median imputation",
@@ -235,6 +241,7 @@ def handle_completeness(
                 if fit:
                     log_action(
                         step="Completeness",
+                        stage="cleaning",
                         rule=f"{col} missing",
                         records_affected=n_miss,
                         action="Mode imputation",
@@ -250,73 +257,168 @@ def _handle_mode_heavy(
     df: pd.DataFrame,
     col: str,
     dominant_val: float,
-) -> pd.DataFrame:
+    lower: float | None = None,
+    upper: float | None = None,
+    action: str | None = None,
+) -> tuple[pd.DataFrame, dict]:
     """Cap / remove outliers among non-dominant values when a column is
-    dominated by a single value (mode > DOMINANT_THRESHOLD)."""
+    dominated by a single value (mode > DOMINANT_THRESHOLD).
+
+    When lower, upper and action are supplied the function runs in
+    *transform* mode and applies them directly.  Otherwise it computes
+    them from *df* (fit mode).
+    """
+    fit = action is None
     non_dom_mask = df[col] != dominant_val
     non_dom_vals = df.loc[non_dom_mask, col]
 
     if len(non_dom_vals) < 10:
-        log_action(
-            step="Outliers",
-            rule=f"{col} mode-heavy ({dominant_val})",
-            records_affected=len(non_dom_vals),
-            action="Skipped",
-            rationale="Insufficient non-dominant samples",
-        )
-        return df
+        if fit:
+            log_action(
+                step="Outliers",
+                stage="cleaning",
+                rule=f"{col} mode-heavy ({dominant_val})",
+                records_affected=len(non_dom_vals),
+                action="Skipped",
+                rationale="Insufficient non-dominant samples",
+            )
+        return df, {
+            "strategy": "mode_heavy",
+            "dominant_val": dominant_val,
+            "action": "skipped",
+        }
 
-    lower = non_dom_vals.quantile(0.05)
-    upper = non_dom_vals.quantile(0.95)
-    outlier_mask = non_dom_vals[(non_dom_vals < lower) | (non_dom_vals > upper)].index
-    full_mask = df.index.isin(outlier_mask)
+    if fit:
+        lower = non_dom_vals.quantile(0.05)
+        upper = non_dom_vals.quantile(0.95)
+
+    outlier_idx = non_dom_vals[(non_dom_vals < lower) | (non_dom_vals > upper)].index
+    full_mask = df.index.isin(outlier_idx)
     count = int(full_mask.sum())
 
-    if count == 0:
-        return df
+    if fit:
+        if count == 0:
+            return df, {
+                "strategy": "mode_heavy",
+                "dominant_val": dominant_val,
+                "lower": float(lower),
+                "upper": float(upper),
+                "action": "none",
+            }
+        action = "cap" if count > cfg.OUTLIER_RATIO_THRESHOLD * len(df) else "remove"
 
-    if count > cfg.OUTLIER_RATIO_THRESHOLD * len(df):
+    if action == "cap":
         clipped = df.loc[non_dom_mask, col].clip(lower=lower, upper=upper)
         if pd.api.types.is_integer_dtype(df[col]) and (clipped % 1).any():
             df[col] = df[col].astype(float)
         df.loc[non_dom_mask, col] = clipped
-        log_action("Outliers", f"{col} mode-heavy IQR", count, "Capping",
-                   f"Non-dominant values capped, dominant={dominant_val}")
-    else:
+        if fit:
+            log_action(
+                step="Outliers",
+                stage="cleaning",
+                rule=f"{col} mode-heavy IQR",
+                records_affected=count,
+                action="Capping",
+                rationale=f"Non-dominant values capped, dominant={dominant_val}",
+            )
+    elif action == "remove":
         df = df[~full_mask].copy()
-        log_action("Outliers", f"{col} mode-heavy IQR", count, "Removal",
-                   f"Non-dominant outliers removed, dominant={dominant_val}")
+        if fit:
+            log_action(
+                step="Outliers",
+                stage="cleaning",
+                rule=f"{col} mode-heavy IQR",
+                records_affected=count,
+                action="Removal",
+                rationale=f"Non-dominant outliers removed, dominant={dominant_val}",
+            )
 
-    return df
+    return df, {
+        "strategy": "mode_heavy",
+        "dominant_val": dominant_val,
+        "lower": float(lower) if lower is not None else None,
+        "upper": float(upper) if upper is not None else None,
+        "action": action,
+    }
 
 
-def _outliers_iqr(df: pd.DataFrame, col: str) -> pd.DataFrame:
-    """Standard IQR cap/remove for columns without a dominant mode."""
-    Q1, Q3 = df[col].quantile(0.25), df[col].quantile(0.75)
-    IQR = Q3 - Q1
-    if IQR == 0:
-        return df
+def _outliers_iqr(
+    df: pd.DataFrame,
+    col: str,
+    lower: float | None = None,
+    upper: float | None = None,
+    action: str | None = None,
+) -> tuple[pd.DataFrame, dict]:
+    """Standard IQR cap/remove for columns without a dominant mode.
 
-    lower, upper = Q1 - 1.5 * IQR, Q3 + 1.5 * IQR
+    When lower, upper and action are supplied the function runs in
+    *transform* mode.  Otherwise it computes them from *df* (fit mode).
+    """
+    fit = action is None
+
+    if fit:
+        Q1, Q3 = df[col].quantile(0.25), df[col].quantile(0.75)
+        IQR = Q3 - Q1
+        if IQR == 0:
+            return df, {
+                "strategy": "iqr",
+                "lower": None,
+                "upper": None,
+                "action": "none",
+            }
+        lower, upper = Q1 - 1.5 * IQR, Q3 + 1.5 * IQR
+
     outlier_mask = (df[col] < lower) | (df[col] > upper)
     count = int(outlier_mask.sum())
-    if count == 0:
-        return df
 
-    if count > cfg.OUTLIER_RATIO_THRESHOLD * len(df):
+    if fit:
+        if count == 0:
+            return df, {
+                "strategy": "iqr",
+                "lower": float(lower),
+                "upper": float(upper),
+                "action": "none",
+            }
+        action = "cap" if count > cfg.OUTLIER_RATIO_THRESHOLD * len(df) else "remove"
+
+    if action == "cap":
         clipped = df[col].clip(lower=lower, upper=upper)
         if pd.api.types.is_integer_dtype(df[col]) and (clipped % 1).any():
             df[col] = df[col].astype(float)
         df[col] = clipped
-        log_action("Outliers", f"{col} IQR", count, "Capping",
-                   "Preserve dataset size, reduce outlier influence")
-    else:
+        if fit:
+            log_action(
+                step="Outliers",
+                stage="cleaning",
+                rule=f"{col} IQR",
+                records_affected=count,
+                action="Capping",
+                rationale="Preserve dataset size, reduce outlier influence",
+            )
+    elif action == "remove":
         df = df[~outlier_mask].copy()
-        log_action("Outliers", f"{col} IQR", count, "Removal", "Confirmed errors")
+        if fit:
+            log_action(
+                step="Outliers",
+                stage="cleaning",
+                rule=f"{col} IQR",
+                records_affected=count,
+                action="Removal",
+                rationale="Confirmed errors",
+            )
 
-    return df
+    return df, {
+        "strategy": "iqr",
+        "lower": float(lower) if lower is not None else None,
+        "upper": float(upper) if upper is not None else None,
+        "action": action,
+    }
 
-def handle_outliers(df: pd.DataFrame) -> pd.DataFrame:
+
+def handle_outliers(
+    df: pd.DataFrame,
+    params: dict | None = None,
+) -> tuple[pd.DataFrame, dict]:
     """
     Detect and handle outliers in every numerical column (excluding lat/lon
     which were already validated for accuracy).
@@ -324,9 +426,18 @@ def handle_outliers(df: pd.DataFrame) -> pd.DataFrame:
     Applies mode-heavy logic when a single value occupies > DOMINANT_THRESHOLD
     fraction of the column; falls back to IQR otherwise.
 
+    * Fit mode    params is None.  Computes and returns params.
+    * Transform   pass the dict returned from the train call.  Applies the
+      same bounds and actions without looking at test stats.
+
     Returns
-        pd.DataFrame
+        (pd.DataFrame, params)
     """
+    df = df.copy()
+    fit = params is None
+    if fit:
+        params = {}
+
     numerical_cols = df.select_dtypes(include='number').columns.tolist()
     skip = {"longitude", "latitude"}
 
@@ -337,33 +448,61 @@ def handle_outliers(df: pd.DataFrame) -> pd.DataFrame:
         if valid.empty:
             continue
 
-        dominant_val = valid.mode().iloc[0]
-        dominant_ratio = (df[col] == dominant_val).mean()
+        col_params = params.get(col) if not fit else None
 
-        if dominant_ratio > cfg.DOMINANT_THRESHOLD:
-            df = _handle_mode_heavy(df, col, dominant_val)
+        if fit:
+            dominant_val = valid.mode().iloc[0]
+            dominant_ratio = (df[col] == dominant_val).mean()
+
+            if dominant_ratio > cfg.DOMINANT_THRESHOLD:
+                df, col_params = _handle_mode_heavy(df, col, dominant_val)
+            else:
+                df, col_params = _outliers_iqr(df, col)
+            params[col] = col_params
         else:
-            df = _outliers_iqr(df, col)
+            if col_params is None:
+                continue
+            action = col_params.get("action")
+            if action in ("none", "skipped"):
+                continue
 
-    logger.info("After outlier handling: %s", df.shape)
-    return df
+            if col_params["strategy"] == "mode_heavy":
+                df, _ = _handle_mode_heavy(
+                    df, col,
+                    dominant_val=col_params["dominant_val"],
+                    lower=col_params["lower"],
+                    upper=col_params["upper"],
+                    action=action,
+                )
+            elif col_params["strategy"] == "iqr":
+                df, _ = _outliers_iqr(
+                    df, col,
+                    lower=col_params["lower"],
+                    upper=col_params["upper"],
+                    action=action,
+                )
+
+    if fit:
+        logger.info("After outlier handling: %s", df.shape)
+    return df, params
 
 def invert_severity_labels(df: pd.DataFrame) -> pd.DataFrame:
     """
     The raw dataset encodes severity as 1=Fatal, 3=Slight (inverse order).
-    Map to 1=Slight, 2=Serious, 3=Fatal via  4 - original.
+    Map to 0=Slight, 1=Serious, 2=Fatal via  3 - original.
 
     Returns
         pd.DataFrame  (copy)
     """
     df = df.copy()
-    df[cfg.TARGET_COL] = 4 - df[cfg.TARGET_COL]
+    df[cfg.TARGET_COL] = 3 - df[cfg.TARGET_COL]
     log_action(
         step="Consistency",
+        stage="cleaning",
         rule="collision_severity label order",
         records_affected=len(df),
-        action="Label inversion (4 - x)",
-        rationale="Align ordinal encoding: 3 = most severe",
+        action="Label inversion (3 - x)",
+        rationale="Align ordinal encoding: 2 = most severe",
     )
     return df
 
@@ -406,7 +545,7 @@ def build_clean_dataset(
         df_train, df_test, numerical_cols, categorical_cols
         The last two lists reflect any columns removed during cleaning.
     """
-    setup_logging()
+    # setup_logging()
 
     df = load_csv(merged_path)
     df = drop_unwanted_columns(df)
@@ -416,12 +555,17 @@ def build_clean_dataset(
 
     df_train, df_test = split_dataset(df)
 
-    df_train, params = handle_completeness(df_train)
-    df_test, _ = handle_completeness(df_test, params=params)
+    df_train, comp_params = handle_completeness(df_train)
+    df_test, _ = handle_completeness(df_test, params=comp_params)
 
-    df_train = handle_outliers(df_train) #momken na5aly el test t-get bounded be el values aly gabnaha men el train
+    df_train, outlier_params = handle_outliers(df_train)
+    df_test, _ = handle_outliers(df_test, params=outlier_params)
 
     df_train = invert_severity_labels(df_train)
     df_test = invert_severity_labels(df_test)
+
+    save_stage_report("cleaning")
+    df_train.to_csv(cfg.INTERIM_DATA_DIR / cfg.CLEANED_TRAIN_OUTPUT_FILE, index=False)
+    df_test.to_csv(cfg.INTERIM_DATA_DIR / cfg.CLEANED_TEST_OUTPUT_FILE, index=False)
  
     return df_train, df_test

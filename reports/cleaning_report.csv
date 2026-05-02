@@ -1,0 +1,54 @@
+step,rule,records_affected,action,rationale
+Column Pruning,Admin / leakage columns,30,Column deletion,Documented in Phase 1 report – not predictive or leakage risk
+Consistency,time format,48472,Coerce to datetime.time,Standardise temporal format
+Accuracy,latitude/longitude outside UK bounds,0,Reject → Quarantine,Critical field violation
+Accuracy,number_of_vehicles or number_of_casualties <= 0,0,Reject → Quarantine,Critical field violation
+Consistency,speed_limit coded as [-1],185,Replace with NaN,Standardise missing value representation
+Consistency,junction_detail coded as [-1],5410,Replace with NaN,Standardise missing value representation
+Consistency,second_road_class coded as [-1],6215,Replace with NaN,Standardise missing value representation
+Consistency,pedestrian_crossing coded as [-1],928,Replace with NaN,Standardise missing value representation
+Consistency,special_conditions_at_site coded as [-1],31898,Replace with NaN,Standardise missing value representation
+Consistency,carriageway_hazards coded as [-1],918,Replace with NaN,Standardise missing value representation
+Consistency,light_conditions coded as [-1],307,Replace with NaN,Standardise missing value representation
+Consistency,weather_conditions coded as [-1],422,Replace with NaN,Standardise missing value representation
+Consistency,road_surface_conditions coded as [-1],922,Replace with NaN,Standardise missing value representation
+Consistency,did_police_officer_attend_scene_of_accident coded as [-1],609,Replace with NaN,Standardise missing value representation
+Completeness,special_conditions_at_site 66% missing,38777,Column deletion,66% missing – cannot impute reliably
+Completeness,wx_visibility 100% missing,38777,Column deletion,100% missing – cannot impute reliably
+Completeness,"latitude, longitude, speed_limit missing",149,Row deletion,"<5% missing, MCAR pattern"
+Completeness,wx_temperature_2m missing,111,Median imputation,Skewed distribution – robust to outliers
+Completeness,wx_relative_humidity_2m missing,111,Median imputation,Skewed distribution – robust to outliers
+Completeness,wx_precipitation missing,111,Median imputation,Skewed distribution – robust to outliers
+Completeness,wx_rain missing,111,Median imputation,Skewed distribution – robust to outliers
+Completeness,wx_snowfall missing,111,Median imputation,Skewed distribution – robust to outliers
+Completeness,wx_snow_depth missing,119,Median imputation,Skewed distribution – robust to outliers
+Completeness,wx_wind_speed_10m missing,111,Median imputation,Skewed distribution – robust to outliers
+Completeness,wx_wind_direction_10m missing,111,Median imputation,Skewed distribution – robust to outliers
+Completeness,wx_wind_gusts_10m missing,111,Median imputation,Skewed distribution – robust to outliers
+Completeness,wx_surface_pressure missing,111,Median imputation,Skewed distribution – robust to outliers
+Completeness,wx_cloud_cover missing,111,Median imputation,Skewed distribution – robust to outliers
+Completeness,junction_detail missing,4313,Mode imputation,Clear dominant category
+Completeness,second_road_class missing,4945,Mode imputation,Clear dominant category
+Completeness,pedestrian_crossing missing,641,Mode imputation,Clear dominant category
+Completeness,light_conditions missing,136,Mode imputation,Clear dominant category
+Completeness,weather_conditions missing,258,Mode imputation,Clear dominant category
+Completeness,road_surface_conditions missing,628,Mode imputation,Clear dominant category
+Completeness,carriageway_hazards missing,617,Mode imputation,Clear dominant category
+Completeness,did_police_officer_attend_scene_of_accident missing,387,Mode imputation,Clear dominant category
+Completeness,wx_weather_code missing,111,Mode imputation,Clear dominant category
+Completeness,wx_is_day missing,111,Mode imputation,Clear dominant category
+Outliers,number_of_vehicles mode-heavy IQR,246,Capping,"Non-dominant values capped, dominant=2"
+Outliers,number_of_casualties mode-heavy IQR,219,Capping,"Non-dominant values capped, dominant=1"
+Outliers,junction_control mode-heavy IQR,150,Capping,"Non-dominant values capped, dominant=-1"
+Outliers,wx_temperature_2m IQR,55,Capping,"Preserve dataset size, reduce outlier influence"
+Outliers,wx_relative_humidity_2m IQR,3,Removal,Confirmed errors
+Outliers,wx_precipitation mode-heavy IQR,255,Capping,"Non-dominant values capped, dominant=0.0"
+Outliers,wx_rain mode-heavy IQR,283,Capping,"Non-dominant values capped, dominant=0.0"
+Outliers,wx_snowfall mode-heavy IQR,13,Removal,"Non-dominant outliers removed, dominant=0.0"
+Outliers,wx_snow_depth mode-heavy IQR,23,Removal,"Non-dominant outliers removed, dominant=0.0"
+Outliers,wx_wind_speed_10m IQR,595,Capping,"Preserve dataset size, reduce outlier influence"
+Outliers,wx_wind_gusts_10m IQR,407,Capping,"Preserve dataset size, reduce outlier influence"
+Outliers,wx_surface_pressure IQR,971,Capping,"Preserve dataset size, reduce outlier influence"
+Outliers,wx_cloud_cover mode-heavy IQR,1080,Capping,"Non-dominant values capped, dominant=100.0"
+Consistency,collision_severity label order,38589,Label inversion (3 - x),Align ordinal encoding: 2 = most severe
+Consistency,collision_severity label order,9650,Label inversion (3 - x),Align ordinal encoding: 2 = most severe

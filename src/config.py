@@ -8,7 +8,7 @@ load_dotenv()
 
 # Paths
 PROJ_ROOT = Path(__file__).resolve().parents[1]
-logger.info(f"PROJ_ROOT path is: {PROJ_ROOT}")
+# logger.info(f"PROJ_ROOT path is: {PROJ_ROOT}")
 
 DATA_DIR = PROJ_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
@@ -16,9 +16,19 @@ INTERIM_DATA_DIR = DATA_DIR / "interim"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 EXTERNAL_DATA_DIR = DATA_DIR / "external"
 
+RAW_COLLISION_FILE = "road-casualty-statistics-raw2025.csv"
+EXTERNAL_WEATHER_FILE = "merged_weather.csv"
+
+INTERIM_OUTPUT_FILE = "accidents_with_weather.csv"
+
+CLEANED_TRAIN_OUTPUT_FILE = "train_clean.csv"
+CLEANED_TEST_OUTPUT_FILE = "test_clean.csv"
+
 REPORTS_DIR = PROJ_ROOT / "reports"
 
-LOG_FILE    = REPORTS_DIR / "cleaning_log.log"
+MERGING_REPORT_FILE = "merging_report.json"
+
+LOG_DIR    = REPORTS_DIR / "logs"
 
 MODELS_DIR = PROJ_ROOT / "models"
 
