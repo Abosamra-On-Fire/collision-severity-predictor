@@ -3,8 +3,15 @@ import logging
 from pathlib import Path
 from typing import  Union
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+
+from src import config as cfg
+
+logger = logging.getLogger("collision_severity_predictor")
+
+
+from src.utils import (
+    log_action,
+)
 
 
 def load_csv(
@@ -28,10 +35,9 @@ def load_csv(
     """
     try:
         filepath = Path(filepath)
-        logger.info(f"Loading CSV file: {filepath}")
-        
+        # log_action(step="loading", rule="loading raw data", action="load")
         df = pd.read_csv(filepath, encoding=encoding, **kwargs)
-        logger.info(f"Successfully loaded {len(df)} rows and {len(df.columns)} columns")
+        # log_action(step="loading", rule=f"Successfully loaded {len(df)} rows and {len(df.columns)} columns", action="load")
         
         return df
     except FileNotFoundError:
@@ -40,3 +46,27 @@ def load_csv(
     except Exception as e:
         logger.error(f"Error loading CSV file: {e}")
         raise
+
+
+def load_raw_data() -> pd.DataFrame:
+    """
+    Load the raw collision dataset from data/raw/.
+    Returns
+        pd.DataFrame
+            Raw collision data.
+    """
+    path = cfg.RAW_DATA_DIR / cfg.RAW_COLLISION_FILE
+    df = load_csv(path)
+    return df
+
+
+def load_external_data() -> pd.DataFrame:
+    """
+    Load the external weather dataset from data/external/.
+    Returns
+        pd.DataFrame
+            External weather data.
+    """
+    path = cfg.EXTERNAL_DATA_DIR / cfg.EXTERNAL_WEATHER_FILE
+    df = load_csv(path)
+    return df

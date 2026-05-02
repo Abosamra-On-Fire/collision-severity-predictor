@@ -1,0 +1,6 @@
+step,rule,records_affected,action,rationale
+preparation for the merge,date+time parsing and timezone conversion for collision data,48472,prepare for merge,
+preparation for the merge,date+time parsing and timezone conversion for weather data,10164960,prepare for merge,
+merging,merging the collision and weather data,48472,merge,
+validation,validating the merge,133,validate,
+saving,saving the merged data,48472,save,
