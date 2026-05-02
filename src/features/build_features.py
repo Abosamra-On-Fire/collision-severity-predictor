@@ -67,37 +67,42 @@ numerical_cols = base_numerical_cols + engineered_numerical_cols
 def feature_interactions(
         df: pd.DataFrame
 ) -> pd.DataFrame:
-    
-    new_df = df.copy()
+    try:
+        new_df = df.copy()
+        if len(new_df) <=0 :
+            return
+        
+        #? Arithmetic Complications
 
-    #? Arithmetic Complications
+        new_df['casualties_per_vehicle'] = new_df['number_of_casualties'] / (new_df['number_of_vehicles'] + 1) 
+        new_df['rain_intensity'] = new_df['wx_rain'] * new_df['wx_precipitation']
+        new_df['wind_force'] = new_df['wx_wind_speed_10m'] * new_df['wx_wind_gusts_10m']
 
-    new_df['casualties_per_vehicle'] = new_df['number_of_casualties'] / (new_df['number_of_vehicles'] + 1) 
-    new_df['rain_intensity'] = new_df['wx_rain'] * new_df['wx_precipitation']
-    new_df['wind_force'] = new_df['wx_wind_speed_10m'] * new_df['wx_wind_gusts_10m']
+        new_df['visibility_risk'] = (
+        (new_df['wx_cloud_cover'] / 100) * 0.4 +
+        (new_df['wx_precipitation'] > 0).astype(int) * 0.4 +
+        (new_df['weather_conditions'] == 7).astype(int) * 0.2 
+    )
+        
+        # numerical_cols.extend([
+        #     'casualties_per_vehicle',
+        #     'rain_intensity',
+        #     'wind_force',
+        #     'visibility_risk'
+        # ])
 
-    new_df['visibility_risk'] = (
-    (new_df['wx_cloud_cover'] / 100) * 0.4 +
-    (new_df['wx_precipitation'] > 0).astype(int) * 0.4 +
-    (new_df['weather_conditions'] == 7).astype(int) * 0.2 
-)
-    
-    # numerical_cols.extend([
-    #     'casualties_per_vehicle',
-    #     'rain_intensity',
-    #     'wind_force',
-    #     'visibility_risk'
-    # ])
+        #? Boolean and Logical Combinations 
 
-    #? Boolean and Logical Combinations 
+        new_df['is_bad_weather'] = (
+        (new_df['wx_rain'] > 0) |
+        (new_df['wx_wind_speed_10m'] > 20) |
+        (new_df['wx_wind_gusts_10m'] > 20)
+    ).astype(int)
+        
+        return new_df
+    except Exception as e:
+        raise RuntimeError(f"Feature engineering failed: {e}")
 
-    new_df['is_bad_weather'] = (
-    (new_df['wx_rain'] > 0) |
-    (new_df['wx_wind_speed_10m'] > 20) |
-    (new_df['wx_wind_gusts_10m'] > 20)
-).astype(int)
-    
-    return new_df
 
 ####################### Feature Scaling ####################
 
@@ -253,12 +258,11 @@ def main():
     X_train_after_variance_thresholding, X_train_selected_numerical, kept_numerical_cols = variance_thresholding_transform(X_train_scaled_encoded,selector)
     X_val_after_variance_thresholding, X_val_selected_numerical, _ = variance_thresholding_transform (X_val_scaled_encoded,selector)
 
-    # dlw2ty hdrop bel correlation based
+    # dlw2ty hdrop bel correlation based selection
     X_train_corr, numerical_cols, dropped_cols =correlation_based_selection(X_train_after_variance_thresholding,y_train,0.9,kept_numerical_cols)
     X_val_corr = X_val_after_variance_thresholding.drop(columns= dropped_cols)
+    print(X_train_corr.shape,X_val_corr.shape)
+
     
 if __name__ == "__main__":
     main()
-
-
-
