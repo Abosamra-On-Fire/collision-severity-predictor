@@ -153,9 +153,10 @@ COLS_NULL_PREC = 0.40
 # # ---------------------------------------------------------------------------
 # # Train / Test Split
 # # ---------------------------------------------------------------------------
-# RANDOM_STATE = 42
-# TEST_SIZE    = 0.20
-
+RANDOM_STATE = 42
+TEST_SIZE    = 0.20
+VARIANCE_THRESHOLD = 0.01
+CORRELATION_THRESHOLD = 0.9
 # UNDERSAMPLE_STRATEGY = {1: 17_810, 2: 5_962, 3: 556}
  
 # MLFLOW_EXPERIMENT_NAME = os.getenv("MLFLOW_EXPERIMENT_NAME", "collision_severity")

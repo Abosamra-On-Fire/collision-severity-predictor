@@ -10,57 +10,30 @@ from sklearn.feature_selection import VarianceThreshold
 import pandas as pd
 import numpy as np
 
+from src import config as cfg
+from src.utils import (
+    log_action,
+    quarantine,
+    setup_logging,
+)
 
-target_col = 'collision_severity'
-
-base_numerical_cols = [
-    'longitude',
-    'latitude',
-    'number_of_vehicles',
-    'number_of_casualties',
-    'wx_temperature_2m',
-    'wx_relative_humidity_2m',
-    'wx_precipitation',
-    'wx_rain',
-    'wx_snowfall',
-    'wx_snow_depth',
-    'wx_wind_speed_10m',
-    'wx_wind_direction_10m',
-    'wx_wind_gusts_10m',
-    'wx_visibility',
-    'wx_surface_pressure',
-    'wx_cloud_cover',
-]
-
-categorical_cols = [
-    'day_of_week',
-    'speed_limit',
-    'time',
-    'first_road_class',
-    'road_type',
-    'junction_detail',
-    'junction_control',
-    'second_road_class',
-    'pedestrian_crossing',
-    'light_conditions',
-    'weather_conditions',
-    'road_surface_conditions',
-    'special_conditions_at_site',
-    'carriageway_hazards',
-    'urban_or_rural_area',
-    'did_police_officer_attend_scene_of_accident',
-    'wx_weather_code',
-    'wx_is_day']
+import logging
+import warnings
 
 
-engineered_numerical_cols = [
-    'casualties_per_vehicle',
-    'rain_intensity',
-    'wind_force',
-    'visibility_risk'
-]
+logger = logging.getLogger("collision_severity_predictor")
 
 
+def warning_to_log(message, category, filename, lineno, file=None, line=None):
+    logger.warning(f"{category.__name__}: {message}")
+
+warnings.showwarning = warning_to_log
+
+
+target_col = cfg.TARGET_COL
+base_numerical_cols = cfg.NUMERICAL_COLS
+categorical_cols = cfg.CATEGORICAL_COLS
+engineered_numerical_cols = cfg.ENGINEERED_NUMERICAL
 numerical_cols = base_numerical_cols + engineered_numerical_cols
 
 ####################### Feature Interactions ####################
@@ -109,11 +82,7 @@ def feature_interactions(
 def feature_scaling_fit(
         df: pd.DataFrame
 ) -> ColumnTransformer:
-    robust_col = [ 
-    'number_of_vehicles',  
-    'number_of_casualties', 
-    'rain_intensity' 
-]
+    robust_col = cfg.ROBUST_COLS
     std_col = list(set(numerical_cols) - set(robust_col))
     preprocessor = ColumnTransformer(
     transformers=[
@@ -221,11 +190,11 @@ def correlation_based_selection (
                     to_drop.add(col)
     X_reduced = X.drop(columns=list(to_drop))
     kept_cols = [col for col in numerical_cols if col not in to_drop]
-    print(to_drop)
     return X_reduced, kept_cols, list(to_drop)
 
 
-def main():
+def main_features():
+
     df=load_csv(r"E:\Data_Science_Project\collision-severity-predictor\data\raw\accidents_with_weather.csv")
 
     X = df.drop(columns=[target_col])
@@ -234,35 +203,68 @@ def main():
     # Lazem asplit abl ay haga 3shan my7salsh leakage
     # Hsplit le training set we validation set 80-20
     X_train, X_val, y_train, y_val = train_test_split(
-    X, y, test_size=0.2, stratify=y, random_state=42
+    X, y, test_size=cfg.TEST_SIZE, stratify=y, random_state=cfg.RANDOM_STATE
 )
-    
+    log_action(
+        step="Feature interactions",
+        rule="",
+        records_affected=len(X_train)+len(X_val),
+        action="Adding columns",
+        rationale="To improve model expressiveness by exposing hidden nonlinear relationships and combined risk factors not captured by raw features",
+    )
     X_train_with_interactions = feature_interactions(X_train)
     X_val_with_interactions   = feature_interactions(X_val)
 
     # Ht3lm el stats mnel training bs b3dha happly them 3la kolo
+    log_action(
+        step="Feature Scaling",
+        rule = "",
+        records_affected=len(X_train_with_interactions)+len(X_val_with_interactions),
+        action="Scaling Features by robust scaling",
+        rationale="Data is mostly skewed so robust scaling would be the most accurate choice"
+    )
     scaling_preprocessor = feature_scaling_fit (X_train_with_interactions)
 
     X_train_scaled = feature_scaling_transform (X_train_with_interactions,scaling_preprocessor)
     X_val_scaled = feature_scaling_transform (X_val_with_interactions,scaling_preprocessor)
 
     # nfsel kalam brdo 3shan my7salsh leakage
+    log_action(
+        step="Feature Encoding",
+        rule = "",
+        records_affected=len(X_train_scaled)+len(X_val_scaled),
+        action="Encoding Features by binary scaling",
+        rationale="Data is mostly nominal with high cardinality, so binary coding is the best choice"
+    )
     encoding_preprocessor = feature_encoding_fit(X_train_scaled)
 
     X_train_scaled_encoded = feature_encoding_transform(X_train_scaled,encoding_preprocessor)
     X_val_scaled_encoded = feature_encoding_transform(X_val_scaled,encoding_preprocessor)
 
     # nfsel kalam brdo 3shan my7salsh leakage
-    selector = variance_thresholding_fit(X_train_scaled_encoded,0.01)
+    log_action(
+        step="Variance Thresholding",
+        rule = "",
+        records_affected=len(X_train_scaled_encoded)+len(X_val_scaled_encoded),
+        action="Columns Deletion",
+        rationale="Any features having variance less than a certain threshold should be deleted"
+    )
+    selector = variance_thresholding_fit(X_train_scaled_encoded,cfg.VARIANCE_THRESHOLD)
 
     X_train_after_variance_thresholding, X_train_selected_numerical, kept_numerical_cols = variance_thresholding_transform(X_train_scaled_encoded,selector)
     X_val_after_variance_thresholding, X_val_selected_numerical, _ = variance_thresholding_transform (X_val_scaled_encoded,selector)
 
     # dlw2ty hdrop bel correlation based selection
-    X_train_corr, numerical_cols, dropped_cols =correlation_based_selection(X_train_after_variance_thresholding,y_train,0.9,kept_numerical_cols)
+    log_action(
+        step="Correlation Based Selection",
+        rule = "",
+        records_affected=len(X_train_after_variance_thresholding)+len(X_val_after_variance_thresholding),
+        action="Columns Deletion",
+        rationale="For each correlated pair of columns, we drop the least correlated with the target"
+    )
+    X_train_corr, numerical_cols, dropped_cols =correlation_based_selection(X_train_after_variance_thresholding,y_train,cfg.CORRELATION_THRESHOLD,kept_numerical_cols)
     X_val_corr = X_val_after_variance_thresholding.drop(columns= dropped_cols)
-    print(X_train_corr.shape,X_val_corr.shape)
 
     
 if __name__ == "__main__":
-    main()
+    main_features()

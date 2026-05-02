@@ -1,5 +1,6 @@
 from src.data.cleaning import build_clean_dataset
 from src.config import INTERIM_DATA_DIR
+from src.features.build_features import main_features
 import pandas as pd
 
 def run_full_pipeline():
@@ -47,6 +48,7 @@ def run_full_pipeline():
     # print("=" * 50)
     # print("PIPELINE COMPLETE")
     # print("=" * 50)
+    main_features()
 
 if __name__ == "__main__":
     run_full_pipeline()

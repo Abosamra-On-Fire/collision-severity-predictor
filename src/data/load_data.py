@@ -28,10 +28,10 @@ def load_csv(
     """
     try:
         filepath = Path(filepath)
-        logger.info(f"Loading CSV file: {filepath}")
+        # logger.info(f"Loading CSV file: {filepath}")
         
-        df = pd.read_csv(filepath, encoding=encoding, **kwargs)
-        logger.info(f"Successfully loaded {len(df)} rows and {len(df.columns)} columns")
+        df = pd.read_csv(filepath, low_memory=False)
+        # logger.info(f"Successfully loaded {len(df)} rows and {len(df.columns)} columns")
         
         return df
     except FileNotFoundError:
