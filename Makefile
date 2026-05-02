@@ -9,7 +9,9 @@ PYTHON_INTERPRETER = python
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
-
+.PHONY: features
+features:
+	$(PYTHON_INTERPRETER) -m src.features.build_features
 
 ## Install Python dependencies
 .PHONY: requirements
@@ -86,3 +88,4 @@ export PRINT_HELP_PYSCRIPT
 
 help:
 	@$(PYTHON_INTERPRETER) -c "${PRINT_HELP_PYSCRIPT}" < $(MAKEFILE_LIST)
+
