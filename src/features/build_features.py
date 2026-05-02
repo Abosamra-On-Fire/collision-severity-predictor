@@ -13,7 +13,7 @@ import numpy as np
 
 target_col = 'collision_severity'
 
-numerical_cols = [
+base_numerical_cols = [
     'longitude',
     'latitude',
     'number_of_vehicles',
@@ -52,6 +52,17 @@ categorical_cols = [
     'wx_weather_code',
     'wx_is_day']
 
+
+engineered_numerical_cols = [
+    'casualties_per_vehicle',
+    'rain_intensity',
+    'wind_force',
+    'visibility_risk'
+]
+
+
+numerical_cols = base_numerical_cols + engineered_numerical_cols
+
 ####################### Feature Interactions ####################
 def feature_interactions(
         df: pd.DataFrame
@@ -71,12 +82,12 @@ def feature_interactions(
     (new_df['weather_conditions'] == 7).astype(int) * 0.2 
 )
     
-    numerical_cols.extend([
-        'casualties_per_vehicle',
-        'rain_intensity',
-        'wind_force',
-        'visibility_risk'
-    ])
+    # numerical_cols.extend([
+    #     'casualties_per_vehicle',
+    #     'rain_intensity',
+    #     'wind_force',
+    #     'visibility_risk'
+    # ])
 
     #? Boolean and Logical Combinations 
 
@@ -166,19 +177,48 @@ def variance_thresholding_fit(
 def variance_thresholding_transform(
         df: pd.DataFrame,
         selector : VarianceThreshold
-) -> pd.DataFrame:
+) -> tuple:
     
-    new_df=df.copy()
+    new_df = df.copy()
     df_numerical = new_df[numerical_cols]
     df_numerical_selected = selector.transform(df_numerical)
     mask = selector.get_support()
     removed_cols = df_numerical.columns[~mask]
-    new_df=new_df.drop(columns=removed_cols)
-    return new_df , df_numerical_selected
+    kept_numerical_cols = df_numerical.columns[mask].tolist()
+    new_df = new_df.drop(columns=removed_cols)
+    return new_df, df_numerical_selected, kept_numerical_cols
 
 
 ####################### Feature Selection by correlation ####################
- 
+
+def correlation_based_selection (
+        X: pd.DataFrame,
+        y: pd.Series,
+        threshold: float,
+        numerical_cols: list
+) -> tuple:
+    X_num = X[numerical_cols].copy()
+    corr_matrix = X_num.corr(method='spearman').abs()
+    upper = corr_matrix.where(
+        np.triu(np.ones(corr_matrix.shape), k=1).astype(bool)
+    )
+    target_corr = X_num.apply(lambda col: col.corr(y, method='spearman')).abs()
+    to_drop = set()
+    for col in upper.columns:
+        for row in upper.index:
+            corr_val = upper.loc[row, col]
+            if pd.notna(corr_val) and corr_val > threshold:
+                if row in to_drop or col in to_drop:
+                    continue
+                if target_corr[row] < target_corr[col]:
+                    to_drop.add(row)
+                else:
+                    to_drop.add(col)
+    X_reduced = X.drop(columns=list(to_drop))
+    kept_cols = [col for col in numerical_cols if col not in to_drop]
+    print(to_drop)
+    return X_reduced, kept_cols, list(to_drop)
+
 
 def main():
     df=load_csv(r"E:\Data_Science_Project\collision-severity-predictor\data\raw\accidents_with_weather.csv")
@@ -208,12 +248,15 @@ def main():
     X_val_scaled_encoded = feature_encoding_transform(X_val_scaled,encoding_preprocessor)
 
     # nfsel kalam brdo 3shan my7salsh leakage
-    selector = variance_thresholding_fit(X_train_scaled,0.01)
+    selector = variance_thresholding_fit(X_train_scaled_encoded,0.01)
 
-    X_train_after_variance_thresholding, X_train_selected_numerical = variance_thresholding_transform(X_train_scaled_encoded,selector)
-    X_val_after_variance_thresholding, X_val_selected_numerical = variance_thresholding_transform (X_val_scaled_encoded,selector)
+    X_train_after_variance_thresholding, X_train_selected_numerical, kept_numerical_cols = variance_thresholding_transform(X_train_scaled_encoded,selector)
+    X_val_after_variance_thresholding, X_val_selected_numerical, _ = variance_thresholding_transform (X_val_scaled_encoded,selector)
+
+    # dlw2ty hdrop bel correlation based
+    X_train_corr, numerical_cols, dropped_cols =correlation_based_selection(X_train_after_variance_thresholding,y_train,0.9,kept_numerical_cols)
+    X_val_corr = X_val_after_variance_thresholding.drop(columns= dropped_cols)
     
-    print(X_train_after_variance_thresholding.shape,X_val_after_variance_thresholding.shape)
 if __name__ == "__main__":
     main()
 
