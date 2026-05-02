@@ -30,7 +30,6 @@ def warning_to_log(message, category, filename, lineno, file=None, line=None):
 warnings.showwarning = warning_to_log
 
 
-
 ####################### Feature Interactions ####################
 def feature_interactions(
         df: pd.DataFrame,
@@ -209,11 +208,6 @@ def summarize(
     summary.append(["columns", df_before.shape[1], df_after.shape[1]])
 
     
-
-
-
-
-
     num_before = df_before.select_dtypes(include=np.number)
     num_after = df_after.select_dtypes(include=np.number)
 
@@ -325,9 +319,7 @@ def main_features():
     train_final.to_csv(train_path, index=False)
     val_final.to_csv(val_path, index=False)
 
-
     summarize(X_train,X_train_corr,rf"{cfg.REPORTS_DIR}/features_summary.csv")
-
 
 ###########################################
 if __name__ == "__main__":
