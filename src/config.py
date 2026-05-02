@@ -8,7 +8,7 @@ load_dotenv()
 
 # Paths
 PROJ_ROOT = Path(__file__).resolve().parents[1]
-logger.info(f"PROJ_ROOT path is: {PROJ_ROOT}")
+# logger.info(f"PROJ_ROOT path is: {PROJ_ROOT}")
 
 DATA_DIR = PROJ_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
@@ -16,9 +16,19 @@ INTERIM_DATA_DIR = DATA_DIR / "interim"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 EXTERNAL_DATA_DIR = DATA_DIR / "external"
 
+RAW_COLLISION_FILE = "road-casualty-statistics-raw2025.csv"
+EXTERNAL_WEATHER_FILE = "merged_weather.csv"
+
+INTERIM_OUTPUT_FILE = "accidents_with_weather.csv"
+
+CLEANED_TRAIN_OUTPUT_FILE = "train_clean.csv"
+CLEANED_TEST_OUTPUT_FILE = "test_clean.csv"
+
 REPORTS_DIR = PROJ_ROOT / "reports"
 
-LOG_FILE    = REPORTS_DIR / "cleaning_log.log"
+MERGING_REPORT_FILE = "merging_report.json"
+
+LOG_DIR    = REPORTS_DIR / "logs"
 
 MODELS_DIR = PROJ_ROOT / "models"
 
@@ -94,20 +104,6 @@ CODED_MISSING: dict[str, list] = {
     "did_police_officer_attend_scene_of_accident": [-1],
 }
 
-ENGINEERED_NUMERICAL = [
-    "casualties_per_vehicle",
-    "rain_intensity",
-    "wind_force",
-    "visibility_risk",
-]
-ENGINEERED_CATEGORICAL = ["is_bad_weather"]
-
-
-DROPPED_CORRELATED = [
-    "wx_rain", "wx_precipitation",
-    "wx_wind_speed_10m", "wx_wind_gusts_10m",
-]
-
 
 ROBUST_COLS = [
     "number_of_vehicles",
@@ -133,30 +129,10 @@ MCAR_COLS = ["latitude", "longitude", "speed_limit"]
 ROW_NULL_PREC = 0.05
 COLS_NULL_PREC = 0.40
 
-# # ---------------------------------------------------------------------------
-# # Completeness Thresholds
-# # ---------------------------------------------------------------------------
-# # Columns with >50 % missing → drop column
-# HIGH_MISSING_COLS = ["wx_visibility", "special_conditions_at_site", "junction_control"]
-# # Columns with <5 % missing and MCAR → drop row
-# MCAR_ROW_DROP_COLS = ["latitude", "longitude", "speed_limit"]
- 
-# # ---------------------------------------------------------------------------
-# # Outlier Handling
-# # ---------------------------------------------------------------------------
-# DOMINANT_THRESHOLD     = 0.30   # ratio: if mode > 30 % → mode-heavy routine
-# OUTLIER_RATIO_THRESHOLD = 0.001  # if outliers > 0.1 % of data → cap, else drop
- 
-# # Geographic bounds for the UK
-
- 
-# # ---------------------------------------------------------------------------
-# # Train / Test Split
-# # ---------------------------------------------------------------------------
-RANDOM_STATE = 42
-TEST_SIZE    = 0.20
 VARIANCE_THRESHOLD = 0.01
 CORRELATION_THRESHOLD = 0.9
+
+
 # UNDERSAMPLE_STRATEGY = {1: 17_810, 2: 5_962, 3: 556}
  
 # MLFLOW_EXPERIMENT_NAME = os.getenv("MLFLOW_EXPERIMENT_NAME", "collision_severity")

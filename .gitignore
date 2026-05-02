@@ -1,6 +1,9 @@
 # Data
 /data/
 
+# reports
+reports/
+
 # Mac OS-specific storage files
 .DS_Store
 ds.venv
