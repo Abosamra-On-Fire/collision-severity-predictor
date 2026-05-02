@@ -1,7 +1,7 @@
 {
-  "merged_rows": 48472,
-  "merged_columns": 65,
-  "missing_weather_rows": "133",
-  "weather_merge_rate_pct": 99.73,
-  "sample_weather_column_checked": "wx_temperature_2m"
+  "merged_rows": 2,
+  "merged_columns": 1,
+  "missing_weather_rows": 0,
+  "weather_merge_rate_pct": 0.0,
+  "sample_weather_column_checked": null
 }
