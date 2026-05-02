@@ -14,7 +14,6 @@ from src import config as cfg
 from src.utils import (
     log_action,
     quarantine,
-    setup_logging,
 )
 
 import logging
@@ -241,18 +240,18 @@ def main_features():
     target_col = cfg.TARGET_COL
     numerical_cols = cfg.NUMERICAL_COLS
     categorical_cols = cfg.CATEGORICAL_COLS
-    df=load_csv(rf"{cfg.INTERIM_DATA_DIR}\accidents_with_weather.csv")
+    df_train=load_csv(rf"{cfg.INTERIM_DATA_DIR}\{cfg.CLEANED_TRAIN_OUTPUT_FILE}")
+    df_test=load_csv(rf"{cfg.INTERIM_DATA_DIR}\{cfg.CLEANED_TEST_OUTPUT_FILE}")
 
-    X = df.drop(columns=[target_col])
-    y = df[target_col]
 
-    # Lazem asplit abl ay haga 3shan my7salsh leakage
-    # Hsplit le training set we validation set 80-20
-    X_train, X_val, y_train, y_val = train_test_split(
-    X, y, test_size=cfg.TEST_SIZE, stratify=y, random_state=cfg.RANDOM_STATE
-)
+    X_train = df_train.drop(columns=[target_col])
+    y_train = df_train[target_col]
+    X_val = df_test.drop(columns=[target_col])
+    y_val = df_test[target_col]
+    
     log_action(
         step="Feature interactions",
+        stage="feature_engineering",
         rule="",
         records_affected=len(X_train)+len(X_val),
         action="Adding columns",
@@ -261,9 +260,9 @@ def main_features():
     X_train_with_interactions , numerical_cols_interaction, categorical_cols_interaction = feature_interactions(X_train,numerical_cols,categorical_cols)
     X_val_with_interactions , _, _  = feature_interactions(X_val,numerical_cols,categorical_cols)
 
-    # Ht3lm el stats mnel training bs b3dha happly them 3la kolo
     log_action(
         step="Feature Scaling",
+        stage="feature_engineering",
         rule = "",
         records_affected=len(X_train_with_interactions)+len(X_val_with_interactions),
         action="Scaling Features by robust scaling",
@@ -274,9 +273,9 @@ def main_features():
     X_train_scaled = feature_scaling_transform (X_train_with_interactions,scaling_preprocessor)
     X_val_scaled = feature_scaling_transform (X_val_with_interactions,scaling_preprocessor)
 
-    # nfsel kalam brdo 3shan my7salsh leakage
     log_action(
         step="Feature Encoding",
+        stage="feature_engineering",
         rule = "",
         records_affected=len(X_train_scaled)+len(X_val_scaled),
         action="Encoding Features by binary scaling",
@@ -287,9 +286,9 @@ def main_features():
     X_train_scaled_encoded = feature_encoding_transform(X_train_scaled,encoding_preprocessor)
     X_val_scaled_encoded = feature_encoding_transform(X_val_scaled,encoding_preprocessor)
 
-    # nfsel kalam brdo 3shan my7salsh leakage
     log_action(
         step="Variance Thresholding",
+        stage="feature_engineering",
         rule = "",
         records_affected=len(X_train_scaled_encoded)+len(X_val_scaled_encoded),
         action="Columns Deletion",
@@ -300,9 +299,9 @@ def main_features():
     X_train_after_variance_thresholding, X_train_selected_numerical, numerical_cols_thresholding = variance_thresholding_transform(X_train_scaled_encoded,selector,numerical_cols_interaction)
     X_val_after_variance_thresholding, X_val_selected_numerical, _ = variance_thresholding_transform (X_val_scaled_encoded,selector,numerical_cols_interaction)
 
-    # dlw2ty hdrop bel correlation based selection
     log_action(
         step="Correlation Based Selection",
+        stage="feature_engineering",
         rule = "",
         records_affected=len(X_train_after_variance_thresholding)+len(X_val_after_variance_thresholding),
         action="Columns Deletion",
@@ -311,8 +310,6 @@ def main_features():
     X_train_corr, numerical_cols_correlation, dropped_cols =correlation_based_selection(X_train_after_variance_thresholding,y_train,cfg.CORRELATION_THRESHOLD,numerical_cols_thresholding)
     X_val_corr = X_val_after_variance_thresholding.drop(columns= dropped_cols)
     
-    
-    # Dlw2ty hsave le two files
     train_final = X_train_corr.copy()
     val_final = X_val_corr.copy()
 
@@ -324,7 +321,6 @@ def main_features():
 
     train_final.to_csv(train_path, index=False)
     val_final.to_csv(val_path, index=False)
-
 
     summarize(X_train,X_train_corr,rf"{cfg.REPORTS_DIR}/features_summary.csv")
 

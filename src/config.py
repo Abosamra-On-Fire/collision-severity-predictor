@@ -104,20 +104,6 @@ CODED_MISSING: dict[str, list] = {
     "did_police_officer_attend_scene_of_accident": [-1],
 }
 
-ENGINEERED_NUMERICAL = [
-    "casualties_per_vehicle",
-    "rain_intensity",
-    "wind_force",
-    "visibility_risk",
-]
-ENGINEERED_CATEGORICAL = ["is_bad_weather"]
-
-
-DROPPED_CORRELATED = [
-    "wx_rain", "wx_precipitation",
-    "wx_wind_speed_10m", "wx_wind_gusts_10m",
-]
-
 
 ROBUST_COLS = [
     "number_of_vehicles",
@@ -143,30 +129,10 @@ MCAR_COLS = ["latitude", "longitude", "speed_limit"]
 ROW_NULL_PREC = 0.05
 COLS_NULL_PREC = 0.40
 
-# # ---------------------------------------------------------------------------
-# # Completeness Thresholds
-# # ---------------------------------------------------------------------------
-# # Columns with >50 % missing → drop column
-# HIGH_MISSING_COLS = ["wx_visibility", "special_conditions_at_site", "junction_control"]
-# # Columns with <5 % missing and MCAR → drop row
-# MCAR_ROW_DROP_COLS = ["latitude", "longitude", "speed_limit"]
- 
-# # ---------------------------------------------------------------------------
-# # Outlier Handling
-# # ---------------------------------------------------------------------------
-# DOMINANT_THRESHOLD     = 0.30   # ratio: if mode > 30 % → mode-heavy routine
-# OUTLIER_RATIO_THRESHOLD = 0.001  # if outliers > 0.1 % of data → cap, else drop
- 
-# # Geographic bounds for the UK
-
- 
-# # ---------------------------------------------------------------------------
-# # Train / Test Split
-# # ---------------------------------------------------------------------------
-RANDOM_STATE = 42
-TEST_SIZE    = 0.20
 VARIANCE_THRESHOLD = 0.01
 CORRELATION_THRESHOLD = 0.9
+
+
 # UNDERSAMPLE_STRATEGY = {1: 17_810, 2: 5_962, 3: 556}
  
 # MLFLOW_EXPERIMENT_NAME = os.getenv("MLFLOW_EXPERIMENT_NAME", "collision_severity")
