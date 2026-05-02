@@ -65,7 +65,7 @@ def feature_interactions(
         (new_df['wx_rain'] > 0) |
         (new_df['wx_wind_speed_10m'] > 20) |
         (new_df['wx_wind_gusts_10m'] > 20)
-    ).astype(int)
+    )
         new_categorical_cols=new_categorical_cols+["is_bad_weather"]
         return new_df , new_numerical_cols ,  new_categorical_cols
     except Exception as e:
@@ -188,7 +188,7 @@ def correlation_based_selection (
                 else:
                     to_drop.add(col)
     X_reduced = X.drop(columns=list(to_drop))
-
+    print(to_drop)
     kept_cols = [col for col in numerical_cols if col not in to_drop]
     return X_reduced, kept_cols, list(to_drop)
 
@@ -317,7 +317,7 @@ def main_features():
     val_final.to_csv(val_path, index=False)
 
     summarize(X_train,X_train_corr,rf"{cfg.REPORTS_DIR}/features_summary.csv")
-
+    print(X_train_corr.columns)
 ###########################################
 if __name__ == "__main__":
     main_features()

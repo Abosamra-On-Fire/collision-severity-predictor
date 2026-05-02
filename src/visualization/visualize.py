@@ -39,7 +39,9 @@ def accidents_count_and_severity_per_hour (
         df : pd.DataFrame,
         save_path:str
 ):
-    hourly = df.groupby('accident_hour')['collision_severity'].agg(['mean','count'])
+    df['hour'] = pd.to_datetime(df['time'].astype(str), format='%H:%M:%S',
+                             errors='coerce').dt.hour
+    hourly = df.groupby('hour')['collision_severity'].agg(['mean','count'])
     fig, ax1 = plt.subplots(figsize=(12, 5))
     ax1.bar(hourly.index, hourly['count'], alpha=0.4, label='Count')
     ax2 = ax1.twinx()
@@ -69,13 +71,38 @@ def rain_vs_collision_severity(
     plt.savefig(save_path)
 
 
+def avg_collision_severity_by_road_type(
+        df:pd.DataFrame,
+        save_path:str
+):
+    plt.figure(figsize=(10,6))
+
+    sns.barplot(
+        x='road_type',
+        y='collision_severity',
+        data=df,
+        estimator='mean'
+    )
+
+    plt.xticks(
+        ticks=range(len(df['road_type'].unique())),
+        labels=["Roundabout", "One Way Street", "Dual Carriage Way", "Single Carriage Way", "Slip Road","Unknown"],
+        rotation=15
+    )
+    plt.title('Average Collision Severity by Road Type')
+    plt.xlabel('Road Type')
+    plt.ylabel('Avg Severity')
+    plt.savefig(save_path)
+    
+
+
 def main_visualize():
-    df  = pd.read_csv(rf"{cfg.PROCESSED_DATA_DIR}\train.csv")
-    df[cfg.TARGET_COL]=3-df[cfg.TARGET_COL]
-    get_pie_chart_for_collision_severity(df,rf"{cfg.FIGURES_DIR}\collision_severity_pie_chart.png")
-    geographic_distribution_accidents(df,rf'{cfg.FIGURES_DIR}\geo_distribution.png')
-    # accidents_count_and_severity_per_hour(df,rf'{cfg.FIGURES_DIR}\hourly.png')
-    rain_vs_collision_severity(df,rf'{cfg.FIGURES_DIR}\rain_vs_severity.png')
+    df  = pd.read_csv(rf"{cfg.INTERIM_DATA_DIR}\{cfg.CLEANED_TRAIN_OUTPUT_FILE}")
+    get_pie_chart_for_collision_severity(df,rf"{cfg.FIGURES_DIR}\{cfg.PIE_CHART_FOR_SEVERITY}")
+    geographic_distribution_accidents(df,rf'{cfg.FIGURES_DIR}\{cfg.GEO_DISTRIBUTION}')
+    accidents_count_and_severity_per_hour(df,rf'{cfg.FIGURES_DIR}\{cfg.HOURLY_ACCIDENTS}')
+    rain_vs_collision_severity(df,rf'{cfg.FIGURES_DIR}\{cfg.RAIN_VS_SEVERITY}')
+    avg_collision_severity_by_road_type(df,rf'{cfg.FIGURES_DIR}\{cfg.AVG_COLLISION_VS_ROAD_TYPE}')
     
 
 if __name__ == "__main__":

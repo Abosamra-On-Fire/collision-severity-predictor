@@ -132,7 +132,12 @@ COLS_NULL_PREC = 0.40
 VARIANCE_THRESHOLD = 0.01
 CORRELATION_THRESHOLD = 0.9
 
-
+# Figures
+PIE_CHART_FOR_SEVERITY = "collision_severity_pie_chart.png"
+GEO_DISTRIBUTION = "geo_distribution.png"
+HOURLY_ACCIDENTS="hourly.png"
+RAIN_VS_SEVERITY="rain_vs_severity.png"
+AVG_COLLISION_VS_ROAD_TYPE="avg_collision_vs_road_type.png"
 # UNDERSAMPLE_STRATEGY = {1: 17_810, 2: 5_962, 3: 556}
  
 # MLFLOW_EXPERIMENT_NAME = os.getenv("MLFLOW_EXPERIMENT_NAME", "collision_severity")
