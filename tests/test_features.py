@@ -19,13 +19,13 @@ def test_correlation_selection(sample_dataframe):
     )
 
     assert isinstance(X_new, pd.DataFrame)
-    assert len(kept) + len(dropped) >= len(X.columns) - len(dropped)
-    assert set(kept).isdisjoint(set(dropped))
+    assert len(kept) + len(dropped) == len(X.columns)
+    
 
 
 def test_feature_interactions_shape_increase(sample_dataframe):
     X = sample_dataframe.drop(columns=["collision_severity"])
-    num_cols = ["a"]  # replace with sample fixture or real list
+    num_cols = ["a"] 
     cat_cols = ["b"]
 
     X_out, new_num, new_cat = feature_interactions(X, num_cols, cat_cols)
