@@ -3,6 +3,10 @@
 
 # reports
 # reports/
+models
+mlruns
+catboost_info
+mlflow.db
 
 # Mac OS-specific storage files
 .DS_Store
