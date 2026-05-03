@@ -1,0 +1,22 @@
+step,rule,records_affected,action,rationale
+LoadModel,,,Loaded DecisionTree,from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\decision_tree_model.pkl
+LoadModel,,,Loaded RandomForest,from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\random_forest_model.pkl
+LoadModel,,,Loaded XGBoost,from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\xgboost_model.pkl
+LoadModel,,,Loaded LightGBM,from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\lightgbm_model.pkl
+LoadModel,,,Loaded CascadeRF,from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\cascade_rf_model.pkl
+LoadModel,,,Loaded Neural Network,from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\best_nn_model.pt
+EvaluateModel,,,Evaluating DecisionTree on test set,
+EvaluateModel,,,DecisionTree test evaluation complete,"accuracy=0.6494, f1_weighted=0.6426"
+EvaluateModel,,,Evaluating RandomForest on test set,
+EvaluateModel,,,RandomForest test evaluation complete,"accuracy=0.7198, f1_weighted=0.6661"
+EvaluateModel,,,Evaluating XGBoost on test set,
+EvaluateModel,,,XGBoost test evaluation complete,"accuracy=0.6456, f1_weighted=0.6559"
+EvaluateModel,,,Evaluating LightGBM on test set,
+EvaluateModel,,,LightGBM test evaluation complete,"accuracy=0.6974, f1_weighted=0.6713"
+EvaluateModel,,,Evaluating CascadeRF on test set,
+EvaluateModel,,,CascadeRF test evaluation complete,"accuracy=0.7330, f1_weighted=0.6425"
+EvaluateModel,,,Evaluating NeuralNetwork on test set,
+EvaluateModel,,,NeuralNetwork test evaluation complete,"accuracy=0.4973, f1_weighted=0.5513"
+SaveReport,,,Saved test report for NeuralNetwork,C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\test_classification_report.txt
+ErrorAnalysis,,,Starting comprehensive error analysis,
+ErrorAnalysis,,,Error analysis complete,Results saved to C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\error_analysis

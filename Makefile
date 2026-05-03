@@ -10,6 +10,10 @@ PYTHON_VERSION = 3.12
 #################################################################################
 
 ## Install dependencies (Poetry)
+.PHONY: pipeline
+pipeline:
+	poetry run python -m src.pipeline
+
 .PHONY: install
 install:
 	poetry install

@@ -1,0 +1,57 @@
+step,rule,records_affected,action,rationale
+MLflowSetup,,,MLflow configured,"tracking_uri=sqlite:///mlflow.db, experiment=collision_severity_classification"
+LoadData,,33748.0,Loaded Train set,"shape=(33748, 75), class_dist={0: 26054, 1: 7138, 2: 556}"
+ClassWeights,,,Computed class weights,"{0: 0.43176991376883905, 1: 1.5759783319323808, 2: 20.232613908872903}"
+TrainAllModels,,,Starting training of all models with cross-validation,
+TrainModel,,,Training Decision Tree (baseline)...,
+TrainModel,,,Start training Decision Tree (baseline),
+CrossValidation,,,CV f1_weighted complete,0.6679 ± 0.0020
+CrossValidation,,,CV roc_auc_ovr_weighted complete,0.5413 ± 0.0013
+CrossValidation,,,CV accuracy complete,0.6675 ± 0.0037
+CrossValidation,,,CV fatal_recall complete,0.0611 ± 0.0154
+Decision Tree Training,baseline,33748.0,Baseline model trained with CV,CV f1_weighted=0.6679
+TrainModel,,,Training Random Forest...,
+TrainModel,,,"Start training Random Forest (RandomizedSearchCV, n_iter=3)",
+HyperparameterTuning,,,Random Forest tuning complete,"best_score=0.7118, params={'max_depth': 25, 'max_features': None, 'min_samples_leaf': 2, 'min_samples_split': 13, 'n_estimators': 393}"
+CrossValidation,,,CV f1_weighted complete,0.7118 ± 0.0024
+CrossValidation,,,CV roc_auc_ovr_weighted complete,0.6837 ± 0.0073
+CrossValidation,,,CV accuracy complete,0.7584 ± 0.0020
+CrossValidation,,,CV fatal_recall complete,0.0287 ± 0.0183
+Random Forest Training,,33748.0,Tuned with RandomizedSearchCV,CV f1_weighted=0.7118
+TrainModel,,,Training XGBoost...,
+TrainModel,,,"Start training XGBoost (RandomizedSearchCV, n_iter=3)",
+HyperparameterTuning,,,XGBoost tuning complete,"best_score=0.6930, params={'colsample_bytree': np.float64(0.749816047538945), 'gamma': np.float64(0.4753571532049581), 'learning_rate': np.float64(0.15639878836228102), 'max_depth': 7, 'min_child_weight': 5, 'n_estimators': 202, 'subsample': np.float64(0.7783331011414365)}"
+CrossValidation,,,CV f1_weighted complete,0.7029 ± 0.0014
+CrossValidation,,,CV roc_auc_ovr_weighted complete,0.6719 ± 0.0085
+CrossValidation,,,CV accuracy complete,0.7667 ± 0.0017
+CrossValidation,,,CV fatal_recall complete,0.0054 ± 0.0072
+XGBoost Training,,33748.0,Tuned with RandomizedSearchCV,CV f1_weighted=0.7029
+TrainModel,,,Training LightGBM...,
+TrainModel,,,"Start training LightGBM (RandomizedSearchCV, n_iter=3)",
+HyperparameterTuning,,,LightGBM tuning complete,"best_score=0.7089, params={'colsample_bytree': np.float64(0.749816047538945), 'learning_rate': np.float64(0.20014286128198325), 'max_depth': 10, 'min_child_samples': 25, 'n_estimators': 202, 'num_leaves': 141, 'reg_alpha': np.float64(0.15599452033620265), 'reg_lambda': np.float64(0.05808361216819946), 'subsample': np.float64(0.9464704583099741)}"
+CrossValidation,,,CV f1_weighted complete,0.7089 ± 0.0049
+CrossValidation,,,CV roc_auc_ovr_weighted complete,0.6525 ± 0.0084
+CrossValidation,,,CV accuracy complete,0.7336 ± 0.0047
+CrossValidation,,,CV fatal_recall complete,0.0108 ± 0.0105
+LightGBM Training,,33748.0,Tuned with RandomizedSearchCV,CV f1_weighted=0.7089
+TrainModel,,,Training Neural Network...,
+TrainModel,,,Start training Neural Network (early stopping),
+TrainModel,,,NN device selected,device=cpu
+TrainEpoch,,,Epoch 10/30,"loss=0.9020, acc=0.5340"
+TrainEpoch,,,Epoch 20/30,"loss=0.8422, acc=0.5312"
+TrainEpoch,,,Epoch 30/30,"loss=0.8100, acc=0.5387"
+Neural Network Training,,33748.0,Trained with early stopping,Final train accuracy=0.5387
+TrainModel,,,Training Cascade RF...,
+TrainModel,,,"Start training Cascade RF (2-layer, CV)",
+CascadeRF Training,,33748.0,2-layer cascade trained with CV,"Train F1=0.9588, Fatal Recall=0.7500"
+ModelComparison,,,CV comparison table generated,"Saved to C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\cv_model_comparison.csv
+               cv_f1_weighted_mean  cv_f1_weighted_std  cv_fatal_recall_mean  cv_accuracy_mean  cv_roc_auc_mean
+model                                                                                                          
+NeuralNetwork               0.5859              0.0000                0.9442            0.5349           0.6813
+CascadeRF                   0.9588              0.0000                0.7500            0.9560           0.9988
+DecisionTree                0.6679              0.0020                0.0611            0.6675           0.5413
+RandomForest                0.7118              0.0024                0.0287            0.7584           0.6837
+LightGBM                    0.7089              0.0049                0.0108            0.7336           0.6525
+XGBoost                     0.7029              0.0014                0.0054            0.7667           0.6719"
+ModelSelection,,,Selected best model based on CV cv_fatal_recall_mean,"model=NeuralNetwork, cv_f1_weighted=0.9442"
+SaveBestModel,,,Saved best model information,Saved to C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\best_model_info.json

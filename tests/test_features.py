@@ -19,8 +19,7 @@ def test_correlation_selection(sample_dataframe):
     )
 
     assert isinstance(X_new, pd.DataFrame)
-    assert len(kept) + len(dropped) >= len(X.columns) - len(dropped)
-    assert set(kept).isdisjoint(set(dropped))
+    assert len(kept) + len(dropped) == len(X.columns)
 
 
 def test_feature_interactions_shape_increase(sample_dataframe):

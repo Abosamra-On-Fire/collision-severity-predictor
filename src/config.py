@@ -24,6 +24,11 @@ INTERIM_OUTPUT_FILE = "accidents_with_weather.csv"
 CLEANED_TRAIN_OUTPUT_FILE = "train_clean.csv"
 CLEANED_TEST_OUTPUT_FILE = "test_clean.csv"
 
+PRO_TRAIN_OUTPUT_FILE = "train_processed.csv"
+PRO_TEST_OUTPUT_FILE = "test_processed.csv"
+
+BALANCED_TRAIN_OUTPUT_FILE = "train_balanced.csv"
+
 REPORTS_DIR = PROJ_ROOT / "reports"
 
 MERGING_REPORT_FILE = "merging_report.json"
@@ -188,7 +193,7 @@ SEVERITY_COST_MATRIX: dict[tuple[int, int], float] = {
     (2, 1): 1,  
 }
 
-CV_FOLDS   = 2
+CV_FOLDS   = 5
 N_ITER_RS  = 3
 SCORING_CV = "f1_weighted"
 
@@ -196,7 +201,7 @@ SCORING_CV = "f1_weighted"
 MLP_HIDDEN_DIM  = 256
 MLP_NUM_CLASSES = 3
 MLP_BATCH_SIZE  = 64
-MLP_EPOCHS      = 5
+MLP_EPOCHS      = 30
 MLP_LR          = 1e-3
 MLP_PATIENCE    = 15
 MLP_DROPOUT     = 0.4
@@ -208,72 +213,3 @@ GEO_DISTRIBUTION = "geo_distribution.png"
 HOURLY_ACCIDENTS = "hourly.png"
 RAIN_VS_SEVERITY = "rain_vs_severity.png"
 AVG_COLLISION_VS_ROAD_TYPE = "avg_collision_vs_road_type.png"
-# UNDERSAMPLE_STRATEGY = {1: 17_810, 2: 5_962, 3: 556}
-
-# MLFLOW_EXPERIMENT_NAME = os.getenv("MLFLOW_EXPERIMENT_NAME", "collision_severity")
-# MLFLOW_TRACKING_URI    = os.getenv("MLFLOW_TRACKING_URI", "mlruns")
-
-# RF_PARAMS = dict(
-#     n_estimators=200,
-#     max_depth=None,
-#     min_samples_split=5,
-#     min_samples_leaf=2,
-#     max_features="sqrt",
-#     class_weight="balanced",
-#     random_state=RANDOM_STATE,
-#     n_jobs=-1,
-# )
-
-# XGB_PARAMS = dict(
-#     n_estimators=200,
-#     max_depth=6,
-#     learning_rate=0.1,
-#     subsample=0.8,
-#     colsample_bytree=0.8,
-#     min_child_weight=1,
-#     objective="multi:softprob",
-#     num_class=3,
-#     eval_metric="mlogloss",
-#     random_state=RANDOM_STATE,
-#     n_jobs=-1,
-# )
-
-# CATBOOST_PARAMS = dict(
-#     iterations=200,
-#     depth=6,
-#     learning_rate=0.1,
-#     l2_leaf_reg=3,
-#     random_seed=RANDOM_STATE,
-#     loss_function="MultiClass",
-#     eval_metric="MultiClass",
-#     verbose=False,
-#     thread_count=-1,
-# )
-
-# LGBM_PARAMS = dict(
-#     n_estimators=200,
-#     max_depth=-1,
-#     num_leaves=31,
-#     learning_rate=0.1,
-#     subsample=0.8,
-#     colsample_bytree=0.8,
-#     min_child_samples=5,
-#     min_child_weight=0.001,
-#     reg_alpha=0,
-#     reg_lambda=0,
-#     objective="multiclass",
-#     num_class=3,
-#     random_state=RANDOM_STATE,
-#     n_jobs=-1,
-#     verbosity=-1,
-# )
-
-# MLP_PARAMS = dict(
-#     hidden_dim=256,
-#     dropout=0.4,
-#     batch_size=64,
-#     epochs=50,
-#     learning_rate=1e-3,
-#     patience=15,
-#     weight_decay=1e-4,
-# )

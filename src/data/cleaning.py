@@ -532,15 +532,10 @@ def split_dataset(
     return df_train, df_test
 
 
-def build_clean_dataset(
-    merged_path: str | None = None,
-) -> tuple[pd.DataFrame, pd.DataFrame, list[str], list[str]]:
+def build_clean_dataset() -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     End-to-end data pipeline: load → prune → cast → validate → clean →
     outliers → split.
-
-    args:
-        merged_path: Path to the raw CSV (defaults to config.RAW_DATA_FILE).
 
     Returns
         df_train, df_test, numerical_cols, categorical_cols
@@ -548,7 +543,7 @@ def build_clean_dataset(
     """
     # setup_logging()
 
-    df = load_csv(merged_path)
+    df = load_csv(cfg.INTERIM_DATA_DIR/cfg.INTERIM_OUTPUT_FILE)
     df = drop_unwanted_columns(df)
     df = cast_column_types(df)
     df = validate_accuracy(df)

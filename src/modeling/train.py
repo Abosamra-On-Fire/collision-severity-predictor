@@ -1,4 +1,4 @@
-#train.py
+
 from __future__ import annotations
 
 import warnings
@@ -15,11 +15,11 @@ from src.data.load_data import load_csv
 from src import config as cfg
 from src.utils import log_action, save_stage_report, setup_logging
 
-# Import all model training functions
+
 from src.modeling.models import (
+    train_decision_tree,
     train_random_forest,
     train_xgboost,
-    train_catboost,
     train_lightgbm,
     train_neural_network,
     train_cascade_rf,
@@ -28,9 +28,9 @@ from src.modeling.models import (
 warnings.filterwarnings("ignore")
 
 
-# ============================================================
-# MLFLOW SETUP
-# ============================================================
+
+
+
 
 def setup_mlflow() -> None:
     mlflow.set_tracking_uri(cfg.MLFLOW_TRACKING_URI)
@@ -43,9 +43,9 @@ def setup_mlflow() -> None:
     )
 
 
-# ============================================================
-# DATA LOADING
-# ============================================================
+
+
+
 
 def load_trainset() -> tuple[
     pd.DataFrame, pd.Series
@@ -57,7 +57,7 @@ def load_trainset() -> tuple[
     -------
     X_train, y_train
     """
-    train_df = load_csv(str(cfg.PROCESSED_DATA_DIR / cfg.TRAIN_OUTPUT_FILE))
+    train_df = load_csv(str(cfg.PROCESSED_DATA_DIR / cfg.BALANCED_TRAIN_OUTPUT_FILE))
 
 
     X_train, y_train =  train_df.drop(columns=[cfg.TARGET_COL]), train_df[cfg.TARGET_COL]
@@ -73,9 +73,9 @@ def load_trainset() -> tuple[
     return X_train, y_train
 
 
-# ============================================================
-# COMPARISON TABLE
-# ============================================================
+
+
+
 
 def _log_cv_comparison(cv_results: dict[str, dict]) -> pd.DataFrame:
     """Create and save a comparison table of CV results."""
@@ -106,11 +106,6 @@ def _log_cv_comparison(cv_results: dict[str, dict]) -> pd.DataFrame:
     
     return df
 
-
-# ============================================================
-# MAIN PIPELINE
-# ============================================================
-
 def train_all_models() -> None:
     """
     Full training pipeline:
@@ -118,12 +113,11 @@ def train_all_models() -> None:
       2. Select the best model based on CV f1_weighted score
       3. Save the best model for later evaluation
     """
-    setup_logging()
     setup_mlflow()
 
     X_train, y_train = load_trainset()
 
-    # Class weights
+    
     classes = np.unique(y_train)
     weights = compute_class_weight("balanced", classes=classes, y=y_train)
     class_weights = dict(zip(map(int, classes), weights.tolist()))
@@ -134,7 +128,7 @@ def train_all_models() -> None:
         stage="training",
     )
 
-    # ── Train all models using CV only ─────────────────────────────────────
+    
     log_action(
         step="TrainAllModels",
         action="Starting training of all models with cross-validation",
@@ -142,7 +136,11 @@ def train_all_models() -> None:
     )
 
     trained: dict[str, tuple[object, dict]] = {}
-    
+    try:
+        log_action(step="TrainModel", action="Training Decision Tree (baseline)...", stage="training")
+        trained["DecisionTree"] = train_decision_tree(X_train, y_train, class_weights)
+    except Exception as e:
+        log_action(step="TrainModel", action=f"Decision Tree failed: {e}", stage="training")
     try:
         log_action(step="TrainModel", action="Training Random Forest...", stage="training")
         trained["RandomForest"] = train_random_forest(X_train, y_train, class_weights)
@@ -154,12 +152,6 @@ def train_all_models() -> None:
         trained["XGBoost"] = train_xgboost(X_train, y_train, class_weights)
     except Exception as e:
         log_action(step="TrainModel", action=f"XGBoost failed: {e}", stage="training")
-
-    try:
-        log_action(step="TrainModel", action="Training CatBoost...", stage="training")
-        trained["CatBoost"] = train_catboost(X_train, y_train, class_weights)
-    except Exception as e:
-        log_action(step="TrainModel", action=f"CatBoost failed: {e}", stage="training")
 
     try:
         log_action(step="TrainModel", action="Training LightGBM...", stage="training")
@@ -179,28 +171,28 @@ def train_all_models() -> None:
     except Exception as e:
         log_action(step="TrainModel", action=f"Cascade RF failed: {e}", stage="training")
 
-    # ── Compare CV results ─────────────────────────────────────────────────
+    
     cv_results = {name: scores for name, (_, scores) in trained.items()}
-    # comparison_df = _log_cv_comparison(cv_results)
+    
 
-    # ── Select best model by CV f1_weighted ───────────────────────────────
+    
     best_model_name = max(
         cv_results,
         key=lambda n: cv_results[n].get("cv_fatal_recall_mean", -1.0),
     )
     best_model, best_cv_scores = trained[best_model_name]
-
+    _log_cv_comparison(cv_results)
     log_action(
         step="ModelSelection",
         action="Selected best model based on CV cv_fatal_recall_mean",
         rationale=(
             f"model={best_model_name}, "
-            f"cv_f1_weighted={best_cv_scores.get("cv_fatal_recall_mean", 0.0):.4f}"
+            f"cv_f1_weighted={best_cv_scores.get('cv_fatal_recall_mean', 0.0):.4f}"
         ),
         stage="training",
     )
 
-    # ── Save best model info ───────────────────────────────────────────────
+    
     best_model_info = {
         "model_name": best_model_name,
         "cv_fatal_recall_mean": best_cv_scores.get("cv_fatal_recall_mean", 0.0),
@@ -227,16 +219,6 @@ def train_all_models() -> None:
         stage="training",
     )
     
-    print("\n" + "=" * 80)
-    print("TRAINING COMPLETE")
-    print("=" * 80)
-    print(f"\nBest Model: {best_model_name}")
-    print(f"CV F1 Weighted: {best_cv_scores.get('cv_f1_weighted_mean', 0.0):.4f}")
-    print(f"\nAll models comparison saved to: {cfg.MODELS_DIR / 'cv_model_comparison.csv'}")
-    print(f"Best model info saved to: {best_model_path}")
-    print(f"\nRun eval.py to evaluate the best model on the test set and perform error analysis.")
-    print("=" * 80)
-
 
 def train_single_model(model_name: str) -> None:
     """Train a single model using CV only."""
@@ -248,9 +230,9 @@ def train_single_model(model_name: str) -> None:
     class_weights = dict(zip(map(int, classes), weights.tolist()))
 
     model_map = {
+        "dt": train_decision_tree,
         "rf": train_random_forest,
         "xgb": train_xgboost,
-        "catboost": train_catboost,
         "lgb": train_lightgbm,
         "nn": train_neural_network,
         "cascade": train_cascade_rf,
@@ -272,10 +254,6 @@ def train_single_model(model_name: str) -> None:
 
 if __name__ == "__main__":
     import sys
-
-    # Usage:
-    #   python train.py                # train all models
-    #   python train.py --model rf     # train one model
     setup_logging()
     if "--model" in sys.argv:
         idx = sys.argv.index("--model")

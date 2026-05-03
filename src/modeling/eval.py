@@ -1,4 +1,4 @@
-#eval.py
+
 from __future__ import annotations
 
 import json
@@ -33,14 +33,8 @@ from src.utils import log_action, save_stage_report, setup_logging
 from src.modeling.models import CascadeRFModel
 from src.modeling.models import MLPClassifier
 
-
-
 warnings.filterwarnings("ignore")
 
-
-# ============================================================
-# SETUP
-# ============================================================
 
 def setup_mlflow() -> None:
     mlflow.set_tracking_uri(cfg.MLFLOW_TRACKING_URI)
@@ -49,15 +43,10 @@ def setup_mlflow() -> None:
 
 def load_test() -> tuple[pd.DataFrame, pd.Series]:
     """Load feature-engineered test split only."""
-    test_df = load_csv(str(cfg.PROCESSED_DATA_DIR / cfg.TEST_OUTPUT_FILE))
+    test_df = load_csv(str(cfg.PROCESSED_DATA_DIR / cfg.PRO_TEST_OUTPUT_FILE))
     X_test = test_df.drop(columns=[cfg.TARGET_COL])
     y_test = test_df[cfg.TARGET_COL]
     return X_test, y_test
-
-
-# ============================================================
-# METRICS
-# ============================================================
 
 def compute_metrics(
     y_true: np.ndarray,
@@ -110,11 +99,11 @@ def compute_business_metrics(
     p = prefix
     metrics: dict[str, float] = {}
     
-    # Force plain Python arrays to avoid numpy scalar type issues
+    
     y_true = np.asarray(y_true).ravel()
     y_pred = np.asarray(y_pred).ravel()
 
-    # Fatal recall
+    
     fatal_mask = y_true == 2
     if fatal_mask.sum() > 0:
         metrics[f"{p}business_fatal_recall"] = float(
@@ -123,7 +112,7 @@ def compute_business_metrics(
     else:
         metrics[f"{p}business_fatal_recall"] = 0.0
 
-    # High-severity detection rate
+    
     high_mask = y_true >= 1
     if high_mask.sum() > 0:
         metrics[f"{p}business_high_severity_detection_rate"] = float(
@@ -132,8 +121,8 @@ def compute_business_metrics(
     else:
         metrics[f"{p}business_high_severity_detection_rate"] = 0.0
 
-    # Average misclassification cost
-    # Use .item() to safely convert numpy scalars to Python ints
+    
+    
     costs = np.array([
         cfg.SEVERITY_COST_MATRIX.get((int(np.array(p_).item()), int(np.array(t_).item())), 0.0)
         for p_, t_ in zip(y_pred, y_true)
@@ -141,7 +130,7 @@ def compute_business_metrics(
     avg_cost = float(costs.mean())
     metrics[f"{p}business_avg_misclassification_cost"] = avg_cost
 
-    # Weighted safety score
+    
     max_cost = max(cfg.SEVERITY_COST_MATRIX.values())
     metrics[f"{p}business_weighted_safety_score"] = float(
         100.0 * (1.0 - avg_cost / max_cost)
@@ -161,9 +150,9 @@ def _all_metrics(
     return m
 
 
-# ============================================================
-# LOAD MODELS
-# ============================================================
+
+
+
 
 def load_all_models() -> dict[str, Any]:
     """Load all trained models from disk."""
@@ -171,9 +160,9 @@ def load_all_models() -> dict[str, Any]:
 
     models = {}
     model_files = {
+        "DecisionTree": "decision_tree_model.pkl",
         "RandomForest": "random_forest_model.pkl",
         "XGBoost": "xgboost_model.pkl",
-        "CatBoost": "catboost_model.pkl",
         "LightGBM": "lightgbm_model.pkl",
         "CascadeRF": "cascade_rf_model.pkl",
     }
@@ -208,13 +197,13 @@ def load_all_models() -> dict[str, Any]:
                 stage="evaluation",
             )
 
-    # Load Neural Network separately
+    
     nn_path = cfg.MODELS_DIR / "best_nn_model.pt"
     if nn_path.exists():
         try:
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-            # Need to know input_dim - infer from test data
+            
             X_test, _ = load_test()
             input_dim = X_test.shape[1]
 
@@ -241,9 +230,6 @@ def load_all_models() -> dict[str, Any]:
     return models
 
 
-# ============================================================
-# TEST SET EVALUATION (ALL MODELS)
-# ============================================================
 
 def evaluate_all_on_test(
     models: dict[str, Any],
@@ -260,7 +246,7 @@ def evaluate_all_on_test(
             stage="evaluation",
         )
 
-        # Get predictions
+        
         if name == "NeuralNetwork":
             device = next(model.parameters()).device
             X_t = torch.FloatTensor(np.array(X_test, copy=True)).to(device)
@@ -268,14 +254,15 @@ def evaluate_all_on_test(
                 proba = torch.softmax(model(X_t), dim=1).cpu().numpy()
             y_pred = proba.argmax(axis=1)
         else:
-            y_pred = model.predict(X_test)
-            proba = model.predict_proba(X_test)
+            X_arr = np.array(X_test) 
+            y_pred = model.predict(X_arr).ravel()
+            proba = model.predict_proba(X_arr)
 
-        # Compute metrics
+        
         metrics = _all_metrics(y_test, y_pred, proba, prefix="test_")
         results[name] = metrics
 
-        # Log to MLflow
+        
         with mlflow.start_run(run_name=f"{name}_TEST_EVAL"):
             mlflow.log_param("evaluated_model", name)
             mlflow.log_param("dataset", "test")
@@ -294,10 +281,6 @@ def evaluate_all_on_test(
     return results
 
 
-# ============================================================
-# COMPARISON VISUALIZATIONS (TEST SET)
-# ============================================================
-
 def create_comparison_plots(
     test_results: dict[str, dict],
     output_dir: Path,
@@ -307,7 +290,7 @@ def create_comparison_plots(
 
     models = list(test_results.keys())
 
-    # 1. Overall Performance Comparison
+    
     fig, axes = plt.subplots(2, 2, figsize=(16, 12))
 
     metrics_to_plot = [
@@ -335,7 +318,7 @@ def create_comparison_plots(
     plt.savefig(output_dir / "test_overall_comparison.png", dpi=150, bbox_inches='tight')
     plt.close()
 
-    # 2. Per-Class Performance
+    
     fig, axes = plt.subplots(1, 3, figsize=(18, 5))
     classes = ["slight", "serious", "fatal"]
 
@@ -365,7 +348,7 @@ def create_comparison_plots(
     plt.savefig(output_dir / "test_per_class_comparison.png", dpi=150, bbox_inches='tight')
     plt.close()
 
-    # 3. Business Metrics
+    
     fig, axes = plt.subplots(1, 3, figsize=(18, 5))
 
     business_metrics = [
@@ -408,9 +391,9 @@ def create_comparison_plots(
     )
 
 
-# ============================================================
-# BEST MODEL TEST REPORT
-# ============================================================
+
+
+
 
 def save_best_model_report(
     model_name: str,
@@ -432,7 +415,7 @@ def save_best_model_report(
         f.write("=" * 80 + "\n")
         f.write(report)
 
-    # Also save metrics JSON
+    
     metrics_path = cfg.MODELS_DIR / "test_metrics_summary.json"
     with open(metrics_path, "w") as f:
         json.dump(test_metrics, f, indent=2)
@@ -444,10 +427,6 @@ def save_best_model_report(
         stage="evaluation",
     )
 
-
-# ============================================================
-# ERROR ANALYSIS
-# ============================================================
 
 def perform_error_analysis(
     model: Any,
@@ -467,7 +446,7 @@ def perform_error_analysis(
         stage="evaluation",
     )
 
-    # 1. Confusion Matrix with detailed annotations
+    
     cm = confusion_matrix(y_test, y_pred)
 
     fig, ax = plt.subplots(figsize=(10, 8))
@@ -494,7 +473,7 @@ def perform_error_analysis(
     plt.savefig(output_dir / "confusion_matrix_detailed.png", dpi=150, bbox_inches='tight')
     plt.close()
 
-    # 2. Misclassification Analysis
+    
     misclassified_mask = y_test != y_pred
     misclassified_indices = np.where(misclassified_mask)[0]
 
@@ -526,7 +505,7 @@ def perform_error_analysis(
     plt.savefig(output_dir / "misclassification_patterns.png", dpi=150, bbox_inches='tight')
     plt.close()
 
-    # 3. Confidence Distribution by Correctness
+    
     fig, axes = plt.subplots(1, 2, figsize=(16, 5))
 
     correct_mask = y_test == y_pred
@@ -555,7 +534,7 @@ def perform_error_analysis(
     plt.savefig(output_dir / "confidence_analysis.png", dpi=150, bbox_inches='tight')
     plt.close()
 
-    # 4. Error by True Class
+    
     fig, axes = plt.subplots(1, 3, figsize=(18, 5))
     class_names = ["Slight", "Serious", "Fatal"]
 
@@ -589,21 +568,11 @@ def perform_error_analysis(
     plt.savefig(output_dir / "error_distribution_by_class.png", dpi=150, bbox_inches='tight')
     plt.close()
 
-    # 5. High Confidence Errors
+    
     high_conf_errors = error_df[error_df['confidence'] > 0.8].sort_values('confidence', ascending=False)
 
-    if len(high_conf_errors) > 0:
-        print("\n" + "=" * 80)
-        print("HIGH CONFIDENCE ERRORS (Confidence > 0.8)")
-        print("=" * 80)
-        print(f"Total: {len(high_conf_errors)} errors")
-        print("\nTop 10 most confident errors:")
-        for idx, row in high_conf_errors.head(10).iterrows():
-            true_cls = class_names[int(row['true_label'])]
-            pred_cls = class_names[int(row['pred_label'])]
-            print(f"  True: {true_cls:8s} → Predicted: {pred_cls:8s} (Confidence: {row['confidence']:.3f})")
 
-    # 6. Summary Statistics
+    
     summary = {
         "total_errors": int(misclassified_mask.sum()),
         "error_rate": float(misclassified_mask.sum() / len(y_test) * 100),
@@ -676,93 +645,39 @@ def perform_error_analysis(
         stage="evaluation",
     )
 
-    print("\n" + "=" * 80)
-    print("ERROR ANALYSIS SUMMARY")
-    print("=" * 80)
-    print(f"Total Errors: {summary['total_errors']} / {len(y_test)} ({summary['error_rate']:.2f}%)")
-    print(f"\nPer-Class Error Rates:")
-    for cls_name in class_names:
-        print(f"  {cls_name:8s}: {summary[f'{cls_name.lower()}_error_rate']:6.2f}%")
-    print(f"\nMost Common Error: {max_error_pattern['pattern']} ({max_error_pattern['count']} occurrences)")
-    print("=" * 80)
-
-
-# ============================================================
-# MAIN EVALUATION PIPELINE (TEST SET ONLY)
-# ============================================================
 
 def eval():
     """Main evaluation pipeline using test set only."""
     setup_mlflow()
 
-    print("\n" + "=" * 80)
-    print("MODEL EVALUATION ON TEST SET ONLY")
-    print("=" * 80)
-
-    # Load test data only
-    print("\n1. Loading test data...")
     X_test, y_test = load_test()
-    print(f"   Test samples: {len(X_test)}")
-
-    # Load all models
-    print("\n2. Loading trained models...")
     models = load_all_models()
 
     if not models:
-        print("ERROR: No models found. Please run train.py first.")
         return
 
-    print(f"   Loaded {len(models)} models: {', '.join(models.keys())}")
-
-    # Evaluate all models on test set
-    print("\n3. Evaluating all models on test set...")
     test_results = evaluate_all_on_test(models, X_test, y_test)
 
-    # Print results table
-    print("\n" + "-" * 80)
-    print(f"{'Model':<20} {'Accuracy':>10} {'F1 Weighted':>12} {'ROC AUC':>10} {'Fatal Recall':>12} {'Safety Score':>12}")
-    print("-" * 80)
-    for name, metrics in test_results.items():
-        print(f"{name:<20} "
-              f"{metrics['test_accuracy']:>10.4f} "
-              f"{metrics['test_f1_weighted']:>12.4f} "
-              f"{metrics['test_roc_auc_weighted']:>10.4f} "
-              f"{metrics['test_business_fatal_recall']:>12.4f} "
-              f"{metrics['test_business_weighted_safety_score']:>12.2f}")
-    print("-" * 80)
-
-    # Create comparison visualizations
-    print("\n4. Creating comparison visualizations...")
-    viz_dir = cfg.MODELS_DIR / "evaluation_visualizations"
-    create_comparison_plots(test_results, viz_dir)
-    print(f"   Visualizations saved to: {viz_dir}")
-
-    # Select best model from test results
     best_model_info_path = cfg.MODELS_DIR / "best_model_info.json"
     if best_model_info_path.exists():
         with open(best_model_info_path, "r") as f:
             best_model_info = json.load(f)
         best_model_name = best_model_info["model_name"]
-        print(f"\n5. Best Model (from train.py): {best_model_name}")
         
-        # Safety check: if that model failed to load, fall back to test metrics
+        
         if best_model_name not in models:
             print(f"   WARNING: {best_model_name} not loaded. Falling back to test-set F1-weighted.")
             best_model_name = max(
                 test_results,
                 key=lambda n: test_results[n].get("test_f1_weighted", 0.0)
             )
-            print(f"   Fallback Best Model: {best_model_name}")
     else:
         best_model_name = max(
             test_results,
             key=lambda n: test_results[n].get("test_f1_weighted", 0.0)
         )
-        print(f"\n5. Best Model (by test F1-weighted): {best_model_name}")
 
-    print(f"\n5. Best Model (by test F1-weighted): {best_model_name}")
-
-    # Get predictions for best model
+    
     best_model = models[best_model_name]
     if best_model_name == "NeuralNetwork":
         device = next(best_model.parameters()).device
@@ -771,22 +686,14 @@ def eval():
             proba = torch.softmax(best_model(X_t), dim=1).cpu().numpy()
         y_pred = proba.argmax(axis=1)
     else:
-        y_pred = best_model.predict(X_test)
-        proba = best_model.predict_proba(X_test)
+        X_arr = np.array(X_test) 
+        y_pred = best_model.predict(X_arr).ravel()
+        proba = best_model.predict_proba(X_arr)
 
-    # Save best model report
+    
     save_best_model_report(best_model_name, test_results[best_model_name], y_test, y_pred)
 
-    # Print best model results
-    print("\nBest Model Test Results:")
-    print(f"  Accuracy: {test_results[best_model_name]['test_accuracy']:.4f}")
-    print(f"  F1 Weighted: {test_results[best_model_name]['test_f1_weighted']:.4f}")
-    print(f"  ROC AUC: {test_results[best_model_name]['test_roc_auc_weighted']:.4f}")
-    print(f"  Fatal Recall: {test_results[best_model_name]['test_business_fatal_recall']:.4f}")
-    print(f"  Safety Score: {test_results[best_model_name]['test_business_weighted_safety_score']:.2f}")
-
-    # Perform error analysis on best model
-    print(f"\n6. Performing error analysis on {best_model_name}...")
+    
     error_dir = cfg.MODELS_DIR / "error_analysis"
     perform_error_analysis(
         best_model, best_model_name,
@@ -795,18 +702,8 @@ def eval():
     )
     print(f"   Error analysis saved to: {error_dir}")
 
-    # Save final summary
+    
     save_stage_report("evaluation")
-
-    print("\n" + "=" * 80)
-    print("EVALUATION COMPLETE")
-    print("=" * 80)
-    print(f"\nResults Summary:")
-    print(f"  - Model comparisons: {viz_dir}")
-    print(f"  - Error analysis: {error_dir}")
-    print(f"  - Test classification report: {cfg.MODELS_DIR / 'test_classification_report.txt'}")
-    print(f"  - Test metrics JSON: {cfg.MODELS_DIR / 'test_metrics_summary.json'}")
-    print("=" * 80 + "\n")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,21 @@
+2026-05-04 02:30:42 | INFO | step=LoadModel | rule=None | records_affected=None | action=Loaded DecisionTree | rationale=from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\decision_tree_model.pkl
+2026-05-04 02:30:43 | INFO | step=LoadModel | rule=None | records_affected=None | action=Loaded RandomForest | rationale=from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\random_forest_model.pkl
+2026-05-04 02:30:43 | INFO | step=LoadModel | rule=None | records_affected=None | action=Loaded XGBoost | rationale=from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\xgboost_model.pkl
+2026-05-04 02:30:43 | INFO | step=LoadModel | rule=None | records_affected=None | action=Loaded LightGBM | rationale=from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\lightgbm_model.pkl
+2026-05-04 02:30:43 | INFO | step=LoadModel | rule=None | records_affected=None | action=Loaded CascadeRF | rationale=from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\cascade_rf_model.pkl
+2026-05-04 02:30:43 | INFO | step=LoadModel | rule=None | records_affected=None | action=Loaded Neural Network | rationale=from C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\best_nn_model.pt
+2026-05-04 02:30:43 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=Evaluating DecisionTree on test set | rationale=None
+2026-05-04 02:30:44 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=DecisionTree test evaluation complete | rationale=accuracy=0.6494, f1_weighted=0.6426
+2026-05-04 02:30:44 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=Evaluating RandomForest on test set | rationale=None
+2026-05-04 02:30:44 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=RandomForest test evaluation complete | rationale=accuracy=0.7198, f1_weighted=0.6661
+2026-05-04 02:30:44 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=Evaluating XGBoost on test set | rationale=None
+2026-05-04 02:30:45 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=XGBoost test evaluation complete | rationale=accuracy=0.6456, f1_weighted=0.6559
+2026-05-04 02:30:45 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=Evaluating LightGBM on test set | rationale=None
+2026-05-04 02:30:45 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=LightGBM test evaluation complete | rationale=accuracy=0.6974, f1_weighted=0.6713
+2026-05-04 02:30:45 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=Evaluating CascadeRF on test set | rationale=None
+2026-05-04 02:30:45 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=CascadeRF test evaluation complete | rationale=accuracy=0.7330, f1_weighted=0.6425
+2026-05-04 02:30:45 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=Evaluating NeuralNetwork on test set | rationale=None
+2026-05-04 02:30:45 | INFO | step=EvaluateModel | rule=None | records_affected=None | action=NeuralNetwork test evaluation complete | rationale=accuracy=0.4973, f1_weighted=0.5513
+2026-05-04 02:30:45 | INFO | step=SaveReport | rule=None | records_affected=None | action=Saved test report for NeuralNetwork | rationale=C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\test_classification_report.txt
+2026-05-04 02:30:45 | INFO | step=ErrorAnalysis | rule=None | records_affected=None | action=Starting comprehensive error analysis | rationale=None
+2026-05-04 02:30:47 | INFO | step=ErrorAnalysis | rule=None | records_affected=None | action=Error analysis complete | rationale=Results saved to C:\Users\Kareem\Documents\school\4th year - 2nd term\Data science\project\cookie\collision-severity-predictor\models\error_analysis

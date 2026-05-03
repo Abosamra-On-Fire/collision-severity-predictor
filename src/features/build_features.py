@@ -284,8 +284,8 @@ def main_features():
     train_final[target_col] = y_train.values
     val_final[target_col] = y_val.values
 
-    train_path = os.path.join(cfg.PROCESSED_DATA_DIR, "train.csv")
-    val_path = os.path.join(cfg.PROCESSED_DATA_DIR, "val.csv")
+    train_path = os.path.join(cfg.PROCESSED_DATA_DIR, cfg.PRO_TRAIN_OUTPUT_FILE)
+    val_path = os.path.join(cfg.PROCESSED_DATA_DIR, cfg.PRO_TEST_OUTPUT_FILE)
 
     train_final.to_csv(train_path, index=False)
     val_final.to_csv(val_path, index=False)
