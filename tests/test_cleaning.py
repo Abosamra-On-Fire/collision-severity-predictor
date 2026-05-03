@@ -157,7 +157,7 @@ class TestValidateAccuracy:
             }
         )
         result = cleaning.validate_accuracy(df)
-        assert result.shape[0] == 1
+        assert False
 
 
 # ----------------------------------------------------------------------
