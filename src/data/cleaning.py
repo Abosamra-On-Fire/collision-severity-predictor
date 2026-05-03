@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import logging
 
+from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+
 
 from src import config as cfg
 from src.data.load_data import load_csv
@@ -19,22 +20,32 @@ logger = logging.getLogger("collision_severity_predictor")
 
 def drop_unwanted_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Drop administrative, redundant, and leakage columns documented in the
-    Phase 1 report.  Unknown column names are silently ignored.
+    Remove non-informative, administrative, and data leakage columns
+    identified during the initial analysis phase.
+
+    Any columns listed in the configuration but not present in the
+    DataFrame are safely ignored.
+
+    Parameters:
+        df (pd.DataFrame): Input dataset.
+
     Returns:
-        pd.DataFrame  (copy)
+        pd.DataFrame: A copy of the dataset after column removal.
     """
     present = [c for c in cfg.COLUMNS_TO_DROP if c in df.columns]
     df = df.drop(columns=present)
+
     log_action(
         step="Column Pruning",
         stage="cleaning",
-        rule="Admin / leakage columns",
+        rule="Admin / leakage feature removal",
         records_affected=len(present),
-        action="Column deletion",
-        rationale="Documented in Phase 1 report – not predictive or leakage risk",
+        action="Dropped columns",
+        rationale="Columns identified as redundant or posing leakage risk during Phase 1 analysis",
     )
+
     logger.info("After column pruning: %s", df.shape)
+
     return df.copy()
 
 
