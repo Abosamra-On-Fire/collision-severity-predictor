@@ -28,7 +28,7 @@ REPORTS_DIR = PROJ_ROOT / "reports"
 
 MERGING_REPORT_FILE = "merging_report.json"
 
-LOG_DIR    = REPORTS_DIR / "logs"
+LOG_DIR = REPORTS_DIR / "logs"
 
 MODELS_DIR = PROJ_ROOT / "models"
 
@@ -46,61 +46,92 @@ except ModuleNotFoundError:
     pass
 
 
-
 TARGET_COL = "collision_severity"
 
 SEVERITY_LABELS = {1: "Slight", 2: "Serious", 3: "Fatal"}
 
 
 COLUMNS_TO_DROP = [
-    "collision_index", "collision_ref_no", "collision_year",
-    "location_easting_osgr", "location_northing_osgr",
-    "local_authority_district", "local_authority_ons_district",
-    "local_authority_highway", "local_authority_highway_current",
+    "collision_index",
+    "collision_ref_no",
+    "collision_year",
+    "location_easting_osgr",
+    "location_northing_osgr",
+    "local_authority_district",
+    "local_authority_ons_district",
+    "local_authority_highway",
+    "local_authority_highway_current",
     "lsoa_of_accident_location",
-    "first_road_number", "second_road_number",
+    "first_road_number",
+    "second_road_number",
     "junction_detail_historic",
     "pedestrian_crossing_human_control_historic",
     "pedestrian_crossing_physical_facilities_historic",
     "carriageway_hazards_historic",
-    "enhanced_severity_collision", "collision_injury_based",
-    "collision_adjusted_severity_serious", "collision_adjusted_severity_slight",
-    "trunk_road_flag", "police_force", "datetime_local",
-    "datetime_utc_x", "_lat_r", "_lon_r", "datetime_utc_merge",
-    "datetime_utc_y", "accident_hour", "date",
+    "enhanced_severity_collision",
+    "collision_injury_based",
+    "collision_adjusted_severity_serious",
+    "collision_adjusted_severity_slight",
+    "trunk_road_flag",
+    "police_force",
+    "datetime_local",
+    "datetime_utc_x",
+    "_lat_r",
+    "_lon_r",
+    "datetime_utc_merge",
+    "datetime_utc_y",
+    "accident_hour",
+    "date",
 ]
 
 NUMERICAL_COLS = [
-    "longitude", "latitude",
-    "number_of_vehicles", "number_of_casualties",
-    "wx_temperature_2m", "wx_relative_humidity_2m",
-    "wx_precipitation", "wx_rain", "wx_snowfall",
-    "wx_snow_depth", "wx_wind_speed_10m", "wx_wind_direction_10m",
-    "wx_wind_gusts_10m", "wx_surface_pressure", "wx_cloud_cover",
+    "longitude",
+    "latitude",
+    "number_of_vehicles",
+    "number_of_casualties",
+    "wx_temperature_2m",
+    "wx_relative_humidity_2m",
+    "wx_precipitation",
+    "wx_rain",
+    "wx_snowfall",
+    "wx_snow_depth",
+    "wx_wind_speed_10m",
+    "wx_wind_direction_10m",
+    "wx_wind_gusts_10m",
+    "wx_surface_pressure",
+    "wx_cloud_cover",
 ]
 
 CATEGORICAL_COLS = [
-    "day_of_week", "speed_limit", "time",
-    "first_road_class", "road_type",
-    "junction_detail", "second_road_class",
-    "pedestrian_crossing", "light_conditions",
-    "weather_conditions", "road_surface_conditions",
-    "carriageway_hazards", "urban_or_rural_area",
+    "day_of_week",
+    "speed_limit",
+    "time",
+    "first_road_class",
+    "road_type",
+    "junction_detail",
+    "second_road_class",
+    "pedestrian_crossing",
+    "light_conditions",
+    "weather_conditions",
+    "road_surface_conditions",
+    "carriageway_hazards",
+    "urban_or_rural_area",
     "did_police_officer_attend_scene_of_accident",
-    "wx_weather_code", "wx_is_day",
+    "wx_weather_code",
+    "wx_is_day",
 ]
 
 
 CODED_MISSING: dict[str, list] = {
-    "speed_limit":                              [-1],
-    "junction_detail":                          [-1],
-    "second_road_class":                        [-1],
-    "pedestrian_crossing":                      [-1],
-    "special_conditions_at_site":               [-1],
-    "carriageway_hazards":                      [-1],
-    "light_conditions":                         [-1],
-    "weather_conditions":                       [-1],
-    "road_surface_conditions":                  [-1],
+    "speed_limit": [-1],
+    "junction_detail": [-1],
+    "second_road_class": [-1],
+    "pedestrian_crossing": [-1],
+    "special_conditions_at_site": [-1],
+    "carriageway_hazards": [-1],
+    "light_conditions": [-1],
+    "weather_conditions": [-1],
+    "road_surface_conditions": [-1],
     "did_police_officer_attend_scene_of_accident": [-1],
 }
 
@@ -112,8 +143,8 @@ ROBUST_COLS = [
 ]
 
 # Outlier Handling
-DOMINANT_THRESHOLD     = 0.30
-OUTLIER_RATIO_THRESHOLD = 0.001 
+DOMINANT_THRESHOLD = 0.30
+OUTLIER_RATIO_THRESHOLD = 0.001
 
 
 # Geographic bounds for the UK
@@ -121,7 +152,7 @@ UK_LAT_MIN, UK_LAT_MAX = 49, 61
 UK_LON_MIN, UK_LON_MAX = -11, 2
 
 RANDOM_STATE = 42
-TEST_SIZE    = 0.20
+TEST_SIZE = 0.20
 
 MCAR_COLS = ["latitude", "longitude", "speed_limit"]
 
@@ -135,11 +166,11 @@ CORRELATION_THRESHOLD = 0.9
 # Figures
 PIE_CHART_FOR_SEVERITY = "collision_severity_pie_chart.png"
 GEO_DISTRIBUTION = "geo_distribution.png"
-HOURLY_ACCIDENTS="hourly.png"
-RAIN_VS_SEVERITY="rain_vs_severity.png"
-AVG_COLLISION_VS_ROAD_TYPE="avg_collision_vs_road_type.png"
+HOURLY_ACCIDENTS = "hourly.png"
+RAIN_VS_SEVERITY = "rain_vs_severity.png"
+AVG_COLLISION_VS_ROAD_TYPE = "avg_collision_vs_road_type.png"
 # UNDERSAMPLE_STRATEGY = {1: 17_810, 2: 5_962, 3: 556}
- 
+
 # MLFLOW_EXPERIMENT_NAME = os.getenv("MLFLOW_EXPERIMENT_NAME", "collision_severity")
 # MLFLOW_TRACKING_URI    = os.getenv("MLFLOW_TRACKING_URI", "mlruns")
 
@@ -153,7 +184,7 @@ AVG_COLLISION_VS_ROAD_TYPE="avg_collision_vs_road_type.png"
 #     random_state=RANDOM_STATE,
 #     n_jobs=-1,
 # )
- 
+
 # XGB_PARAMS = dict(
 #     n_estimators=200,
 #     max_depth=6,
@@ -167,7 +198,7 @@ AVG_COLLISION_VS_ROAD_TYPE="avg_collision_vs_road_type.png"
 #     random_state=RANDOM_STATE,
 #     n_jobs=-1,
 # )
- 
+
 # CATBOOST_PARAMS = dict(
 #     iterations=200,
 #     depth=6,
@@ -179,7 +210,7 @@ AVG_COLLISION_VS_ROAD_TYPE="avg_collision_vs_road_type.png"
 #     verbose=False,
 #     thread_count=-1,
 # )
- 
+
 # LGBM_PARAMS = dict(
 #     n_estimators=200,
 #     max_depth=-1,
@@ -197,7 +228,7 @@ AVG_COLLISION_VS_ROAD_TYPE="avg_collision_vs_road_type.png"
 #     n_jobs=-1,
 #     verbosity=-1,
 # )
- 
+
 # MLP_PARAMS = dict(
 #     hidden_dim=256,
 #     dropout=0.4,
@@ -207,4 +238,3 @@ AVG_COLLISION_VS_ROAD_TYPE="avg_collision_vs_road_type.png"
 #     patience=15,
 #     weight_decay=1e-4,
 # )
- 

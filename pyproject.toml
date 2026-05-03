@@ -1,49 +1,40 @@
-[build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
-
-[project]
-name = "collision_severity_predictor"
+[tool.poetry]
+name = "collision-severity-predictor"
 version = "0.0.1"
-description = "tise porject aims to predict the severity of the collisions that takes place in the UK"
-authors = [
-  { name = "Team 3" },
-]
+description = "this project aims to predict the severity of collisions in the UK"
+authors = ["Team 3"]
 
-readme = "README.md"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    
-]
-requires-python = "~=3.12.0"
+package-mode = false
 
+[tool.poetry.dependencies]
+python = "^3.12"
+pandas = "^2.2.0"
+scikit-learn = "^1.4.0"
+category-encoders = "^2.6.0"
+plotly = "^5.0.0"
+imbalanced-learn = "^0.12.0"
+xgboost = "^2.0.0"
+torch = "^2.0.0"
+lightgbm = "^4.0.0"
+catboost = "^1.2.0"
+seaborn = "^0.13.0"
+python-dotenv = "^1.0.0"
+loguru = "^0.7.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.0"
+pytest-mock = "^3.10.0"
+pytest-cov = "^4.0.0"
+ruff = "^0.4.0"
 
 [tool.ruff]
 line-length = 99
-src = ["collision_severity_predictor"]
-include = ["pyproject.toml", "collision_severity_predictor/**/*.py"]
+src = ["src"]
+include = ["pyproject.toml", "src/**/*.py"]
 
 [tool.ruff.lint]
-extend-select = ["I"]  # Add import sorting
+extend-select = ["I"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["collision_severity_predictor"]
+known-first-party = ["src"]
 force-sort-within-sections = true
-
-
-[tool.poetry.dependencies]
-pandas = "^3.0.2"
-scikit-learn = "^1.8.0"
-category-encoders = "^2.9.0"
-plotly = "^6.7.0"
-imblearn = "^0.0"
-xgboost = "^3.2.0"
-torch = "^2.11.0"
-lightgbm = "^4.6.0"
-catboost = "^1.2.10"
-seaborn = "^0.13.2"
-pytest = "^9.0.3"
-pytest-mock = "^3.15.1"
-dotenv = "^0.9.9"
-loguru = "^0.7.3"
-pytest-cov = "^7.1.0"

@@ -1,18 +1,15 @@
 from __future__ import annotations
 
-import logging
 from datetime import datetime
+import logging
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import pandas as pd
 
 import src.config as cfg
 
-
 stage_logs: dict[str, list[dict]] = {}
 quarantine_records: list[pd.DataFrame] = []
-
 
 
 def _stage_log_path(stage: str) -> Path:
@@ -63,7 +60,7 @@ def setup_logging(log_file: Path | str | None = None) -> logging.Logger:
 def log_event(step: str, stage: str | None = None, **kwargs) -> None:
     stage = stage or step
     entry = {"step": step, **kwargs}
-    
+
     if stage not in stage_logs:
         stage_logs[stage] = []
     stage_logs[stage].append(entry)
@@ -71,7 +68,7 @@ def log_event(step: str, stage: str | None = None, **kwargs) -> None:
     logger = logging.getLogger("collision_severity_predictor")
     msg = " | ".join(f"{k}={v}" for k, v in entry.items())
     logger.info(msg)
-    
+
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open(_stage_log_path(stage), "a", encoding="utf-8") as f:
         f.write(f"{ts} | INFO | {msg}\n")
@@ -97,7 +94,9 @@ def log_action(
     )
 
 
-def quarantine(df: pd.DataFrame, mask: pd.Series, reason: str, stage: str | None = None) -> pd.DataFrame:
+def quarantine(
+    df: pd.DataFrame, mask: pd.Series, reason: str, stage: str | None = None
+) -> pd.DataFrame:
     rejected = df[mask].copy()
     rejected["rejection_reason"] = reason
     quarantine_records.append(rejected)
@@ -128,6 +127,7 @@ def save_stage_report(stage: str, output_path: Path | str | None = None) -> Path
     df = get_step_report(stage)
     if output_path is None:
         from src.config import REPORTS_DIR
+
         output_path = Path(REPORTS_DIR) / f"{stage}_report.csv"
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)

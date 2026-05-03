@@ -5,9 +5,9 @@ import logging
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from src.data.load_data import load_csv
 
 from src import config as cfg
+from src.data.load_data import load_csv
 from src.utils import (
     log_action,
     quarantine,
@@ -15,6 +15,7 @@ from src.utils import (
 )
 
 logger = logging.getLogger("collision_severity_predictor")
+
 
 def drop_unwanted_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -36,6 +37,7 @@ def drop_unwanted_columns(df: pd.DataFrame) -> pd.DataFrame:
     logger.info("After column pruning: %s", df.shape)
     return df.copy()
 
+
 def cast_column_types(df: pd.DataFrame) -> pd.DataFrame:
     """
     Cast categorical columns to the category dtype and time to
@@ -51,9 +53,7 @@ def cast_column_types(df: pd.DataFrame) -> pd.DataFrame:
             df[col] = df[col].astype("category")
 
     if "time" in df.columns:
-        df["time"] = pd.to_datetime(
-            df["time"], format="%H:%M", errors="coerce"
-        ).dt.time
+        df["time"] = pd.to_datetime(df["time"], format="%H:%M", errors="coerce").dt.time
         log_action(
             step="Consistency",
             stage="cleaning",
@@ -78,16 +78,17 @@ def validate_accuracy(df: pd.DataFrame) -> pd.DataFrame:
         pd.DataFrame  (rows removed)
     """
     geo_mask = (
-        (df["latitude"]  < cfg.UK_LAT_MIN) | (df["latitude"]  > cfg.UK_LAT_MAX) |
-        (df["longitude"] < cfg.UK_LON_MIN) | (df["longitude"] > cfg.UK_LON_MAX)
+        (df["latitude"] < cfg.UK_LAT_MIN)
+        | (df["latitude"] > cfg.UK_LAT_MAX)
+        | (df["longitude"] < cfg.UK_LON_MIN)
+        | (df["longitude"] > cfg.UK_LON_MAX)
     )
     df = quarantine(df, geo_mask, "latitude/longitude outside UK bounds", stage="cleaning")
 
-    count_mask = (
-        (df["number_of_vehicles"]  <= 0) |
-        (df["number_of_casualties"] <= 0)
+    count_mask = (df["number_of_vehicles"] <= 0) | (df["number_of_casualties"] <= 0)
+    df = quarantine(
+        df, count_mask, "number_of_vehicles or number_of_casualties <= 0", stage="cleaning"
     )
-    df = quarantine(df, count_mask, "number_of_vehicles or number_of_casualties <= 0", stage="cleaning")
 
     logger.info("After accuracy quarantine: %s", df.shape)
     return df
@@ -119,6 +120,7 @@ def fix_consistency(df: pd.DataFrame) -> pd.DataFrame:
             )
     return df
 
+
 def handle_completeness(
     df: pd.DataFrame,
     params: dict | None = None,
@@ -129,7 +131,7 @@ def handle_completeness(
     * Fit mode    params is None.  Computes and returns params.
     * Transform   pass the dict returned from the train call.  Applies the
       same columns-drops / imputation values without looking at test stats.
-    
+
     args:
         df: DataFrame
         params: dict
@@ -138,7 +140,7 @@ def handle_completeness(
         (df_clean, params)
     """
     df = df.copy()
-    fit = params is None         
+    fit = params is None
 
     if fit:
         params = {
@@ -152,11 +154,11 @@ def handle_completeness(
     categorical_cols = df.select_dtypes(include="category").columns.tolist()
     all_features = set(numerical_cols + categorical_cols)
 
-
     if fit:
         missing_rates = df.isnull().mean()
         params["cols_to_drop"] = [
-            c for c in missing_rates.index
+            c
+            for c in missing_rates.index
             if c in all_features and missing_rates[c] >= cfg.COLS_NULL_PREC
         ]
         for col in params["cols_to_drop"]:
@@ -177,12 +179,10 @@ def handle_completeness(
             if col in categorical_cols:
                 categorical_cols.remove(col)
 
-
     if fit:
         mcar_present = [c for c in cfg.MCAR_COLS if c in df.columns]
         params["mcar_cols"] = [
-            c for c in mcar_present
-            if 0 < df[c].isnull().mean() < cfg.ROW_NULL_PREC
+            c for c in mcar_present if 0 < df[c].isnull().mean() < cfg.ROW_NULL_PREC
         ]
 
     low_missing_mcar = [c for c in params["mcar_cols"] if c in df.columns]
@@ -229,9 +229,7 @@ def handle_completeness(
 
         if fit:
             mode_val = df[col].mode()
-            params["categorical_impute"][col] = (
-                mode_val.iloc[0] if not mode_val.empty else None
-            )
+            params["categorical_impute"][col] = mode_val.iloc[0] if not mode_val.empty else None
 
         n_miss = int(df[col].isnull().sum())
         if n_miss > 0:
@@ -252,6 +250,7 @@ def handle_completeness(
         logger.info("After completeness handling: %s", df.shape)
 
     return df, params
+
 
 def _handle_mode_heavy(
     df: pd.DataFrame,
@@ -438,7 +437,7 @@ def handle_outliers(
     if fit:
         params = {}
 
-    numerical_cols = df.select_dtypes(include='number').columns.tolist()
+    numerical_cols = df.select_dtypes(include="number").columns.tolist()
     skip = {"longitude", "latitude"}
 
     for col in numerical_cols:
@@ -468,7 +467,8 @@ def handle_outliers(
 
             if col_params["strategy"] == "mode_heavy":
                 df, _ = _handle_mode_heavy(
-                    df, col,
+                    df,
+                    col,
                     dominant_val=col_params["dominant_val"],
                     lower=col_params["lower"],
                     upper=col_params["upper"],
@@ -476,7 +476,8 @@ def handle_outliers(
                 )
             elif col_params["strategy"] == "iqr":
                 df, _ = _outliers_iqr(
-                    df, col,
+                    df,
+                    col,
                     lower=col_params["lower"],
                     upper=col_params["upper"],
                     action=action,
@@ -485,6 +486,7 @@ def handle_outliers(
     if fit:
         logger.info("After outlier handling: %s", df.shape)
     return df, params
+
 
 def invert_severity_labels(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -505,6 +507,7 @@ def invert_severity_labels(df: pd.DataFrame) -> pd.DataFrame:
         rationale="Align ordinal encoding: 2 = most severe",
     )
     return df
+
 
 def split_dataset(
     df: pd.DataFrame,
@@ -527,8 +530,6 @@ def split_dataset(
 
     logger.info("Train shape: %s | Test shape: %s", df_train.shape, df_test.shape)
     return df_train, df_test
-
-
 
 
 def build_clean_dataset(
@@ -567,5 +568,5 @@ def build_clean_dataset(
     save_stage_report("cleaning")
     df_train.to_csv(cfg.INTERIM_DATA_DIR / cfg.CLEANED_TRAIN_OUTPUT_FILE, index=False)
     df_test.to_csv(cfg.INTERIM_DATA_DIR / cfg.CLEANED_TEST_OUTPUT_FILE, index=False)
- 
+
     return df_train, df_test
