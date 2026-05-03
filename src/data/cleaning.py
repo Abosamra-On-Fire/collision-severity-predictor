@@ -85,9 +85,9 @@ def validate_accuracy(df: pd.DataFrame) -> pd.DataFrame:
     )
     df = quarantine(df, geo_mask, "latitude/longitude outside UK bounds", stage="cleaning")
 
-    count_mask = (df["number_of_vehicles"] <= 0) | (df["number_of_casualties"] <= 0)
+    count_mask = (df["number_of_vehicles"] <= 0) | (df["number_of_casualties"] < 0)
     df = quarantine(
-        df, count_mask, "number_of_vehicles or number_of_casualties <= 0", stage="cleaning"
+        df, count_mask, "number_of_vehicles or number_of_casualties < 0", stage="cleaning"
     )
 
     logger.info("After accuracy quarantine: %s", df.shape)
