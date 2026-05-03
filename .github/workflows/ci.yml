@@ -27,6 +27,14 @@ jobs:
 
       - name: Install dependencies
         run: make install
+        
+      - name: Formatting 
+        run: make format
 
-      - name: Run CI pipeline
-        run: make ci
+      - name: Lint 
+        run: make lint
+
+      - name: Testing 
+        run: make test
+      
+        
