@@ -24,7 +24,11 @@ features:
 ## Run model / experiments
 .PHONY: train
 train:
-	poetry run python -m src.modeling.class_balancing
+	poetry run python -m src.modeling.train
+
+.PHONY: eval
+eval:
+	poetry run python -m src.modeling.eval
 
 
 ## Run tests with coverage
