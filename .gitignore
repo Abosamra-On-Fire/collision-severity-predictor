@@ -4,6 +4,12 @@
 # reports
 reports/
 
+mlruns
+
+models
+catboost_info
+mlflow.db
+
 # Mac OS-specific storage files
 .DS_Store
 ds.venv

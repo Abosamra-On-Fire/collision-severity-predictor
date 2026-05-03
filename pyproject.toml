@@ -31,8 +31,12 @@ known-first-party = ["collision_severity_predictor"]
 force-sort-within-sections = true
 
 
+[tool.poetry]
+package-mode = false
+
 [tool.poetry.dependencies]
-pandas = "^3.0.2"
+pandas = "^2.2.3"
+mlflow = "^3.11.1"
 scikit-learn = "^1.8.0"
 category-encoders = "^2.9.0"
 plotly = "^6.7.0"

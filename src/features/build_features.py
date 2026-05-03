@@ -316,13 +316,14 @@ def main_features():
     train_final[target_col] = y_train.values
     val_final[target_col] = y_val.values
     
-    train_path = os.path.join(cfg.PROCESSED_DATA_DIR, "train.csv")
-    val_path = os.path.join(cfg.PROCESSED_DATA_DIR, "val.csv")
+    train_path = os.path.join(cfg.PROCESSED_DATA_DIR, cfg.TRAIN_OUTPUT_FILE)
+    val_path = os.path.join(cfg.PROCESSED_DATA_DIR, cfg.TEST_OUTPUT_FILE)
 
     train_final.to_csv(train_path, index=False)
     val_final.to_csv(val_path, index=False)
 
     summarize(X_train,X_train_corr,rf"{cfg.REPORTS_DIR}/features_summary.csv")
+    print(train_final.columns)
 
 
 ###########################################

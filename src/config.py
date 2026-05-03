@@ -35,6 +35,10 @@ MODELS_DIR = PROJ_ROOT / "models"
 REPORTS_DIR = PROJ_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
 
+TRAIN_OUTPUT_FILE = "train.csv"
+VAL_OUTPUT_FILE = "val.csv"
+TEST_OUTPUT_FILE = "test.csv"
+
 # If tqdm is installed, configure loguru with tqdm.write
 # https://github.com/Delgan/loguru/issues/135
 try:
@@ -133,73 +137,36 @@ VARIANCE_THRESHOLD = 0.01
 CORRELATION_THRESHOLD = 0.9
 
 
-# UNDERSAMPLE_STRATEGY = {1: 17_810, 2: 5_962, 3: 556}
- 
-# MLFLOW_EXPERIMENT_NAME = os.getenv("MLFLOW_EXPERIMENT_NAME", "collision_severity")
-# MLFLOW_TRACKING_URI    = os.getenv("MLFLOW_TRACKING_URI", "mlruns")
+MODELS_DIR = PROJ_ROOT / "models"
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
-# RF_PARAMS = dict(
-#     n_estimators=200,
-#     max_depth=None,
-#     min_samples_split=5,
-#     min_samples_leaf=2,
-#     max_features="sqrt",
-#     class_weight="balanced",
-#     random_state=RANDOM_STATE,
-#     n_jobs=-1,
-# )
- 
-# XGB_PARAMS = dict(
-#     n_estimators=200,
-#     max_depth=6,
-#     learning_rate=0.1,
-#     subsample=0.8,
-#     colsample_bytree=0.8,
-#     min_child_weight=1,
-#     objective="multi:softprob",
-#     num_class=3,
-#     eval_metric="mlogloss",
-#     random_state=RANDOM_STATE,
-#     n_jobs=-1,
-# )
- 
-# CATBOOST_PARAMS = dict(
-#     iterations=200,
-#     depth=6,
-#     learning_rate=0.1,
-#     l2_leaf_reg=3,
-#     random_seed=RANDOM_STATE,
-#     loss_function="MultiClass",
-#     eval_metric="MultiClass",
-#     verbose=False,
-#     thread_count=-1,
-# )
- 
-# LGBM_PARAMS = dict(
-#     n_estimators=200,
-#     max_depth=-1,
-#     num_leaves=31,
-#     learning_rate=0.1,
-#     subsample=0.8,
-#     colsample_bytree=0.8,
-#     min_child_samples=5,
-#     min_child_weight=0.001,
-#     reg_alpha=0,
-#     reg_lambda=0,
-#     objective="multiclass",
-#     num_class=3,
-#     random_state=RANDOM_STATE,
-#     n_jobs=-1,
-#     verbosity=-1,
-# )
- 
-# MLP_PARAMS = dict(
-#     hidden_dim=256,
-#     dropout=0.4,
-#     batch_size=64,
-#     epochs=50,
-#     learning_rate=1e-3,
-#     patience=15,
-#     weight_decay=1e-4,
-# )
- 
+
+N_SPLITS = 5
+
+MLFLOW_TRACKING_URI = "sqlite:///mlflow.db" 
+MLFLOW_EXPERIMENT_NAME = "collision_severity_classification"
+
+
+
+SEVERITY_COST_MATRIX: dict[tuple[int, int], float] = {
+    (0, 1): 3,   
+    (0, 2): 10, 
+    (1, 0): 1,  
+    (1, 2): 5,  
+    (2, 0): 1,  
+    (2, 1): 1,  
+}
+
+CV_FOLDS   = 2
+N_ITER_RS  = 3
+SCORING_CV = "f1_weighted"
+
+
+MLP_HIDDEN_DIM  = 256
+MLP_NUM_CLASSES = 3
+MLP_BATCH_SIZE  = 64
+MLP_EPOCHS      = 5
+MLP_LR          = 1e-3
+MLP_PATIENCE    = 15
+MLP_DROPOUT     = 0.4
+MLP_WEIGHT_DECAY = 1e-4
