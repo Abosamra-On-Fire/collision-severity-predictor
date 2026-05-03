@@ -1,21 +1,16 @@
-import logging
-from pathlib import Path
-from typing import Tuple
-
 import json
+import logging
 
 import pandas as pd
 
 import src.config as cfg
+from src.data.load_data import (
+    load_external_data,
+    load_raw_data,
+)
 from src.utils import (
     log_action,
-    setup_logging,
     save_stage_report,
-)
-
-from src.data.load_data import (
-    load_raw_data,
-    load_external_data,
 )
 
 logger = logging.getLogger("collision_severity_predictor")
@@ -41,11 +36,7 @@ def _prepare_collision_datetime(df: pd.DataFrame) -> pd.DataFrame:
     df["_lat_r"] = df["latitude"].round(1)
     df["_lon_r"] = df["longitude"].round(1)
 
-    df["datetime_utc_merge"] = (
-        df["datetime_utc"]
-        .dt.floor("h")
-        .dt.tz_localize(None)
-    )
+    df["datetime_utc_merge"] = df["datetime_utc"].dt.floor("h").dt.tz_localize(None)
 
     log_action(
         step="preparation for the merge",
@@ -105,7 +96,7 @@ def validate_merge(merged_df: pd.DataFrame, weather_df: pd.DataFrame) -> dict:
         "sample_weather_column_checked": sample_col,
     }
     with open(cfg.REPORTS_DIR / cfg.MERGING_REPORT_FILE, "w", encoding="utf-8") as f:
-            json.dump(report, f, indent=2, default=str)
+        json.dump(report, f, indent=2, default=str)
     log_action(
         step="validation",
         stage="merging",
@@ -130,8 +121,7 @@ def save_merged_data(
     )
 
 
-def merge_collision_weather(
-) -> None:
+def merge_collision_weather() -> None:
     # setup_logging()
 
     collision_df = load_raw_data()
@@ -142,7 +132,7 @@ def merge_collision_weather(
 
     merged_df = merge_datasets(collision_df, weather_df)
 
-    report = validate_merge(merged_df, weather_df)
+    validate_merge(merged_df, weather_df)
 
     save_merged_data(merged_df)
 

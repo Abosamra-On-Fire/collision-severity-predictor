@@ -1,78 +1,69 @@
 #################################################################################
-# GLOBALS                                                                       #
+# GLOBALS
 #################################################################################
 
 PROJECT_NAME = collision-severity-predictor
 PYTHON_VERSION = 3.12
-PYTHON_INTERPRETER = python
 
 #################################################################################
-# COMMANDS                                                                      #
+# COMMANDS
 #################################################################################
+
+## Install dependencies (Poetry)
+.PHONY: install
+install:
+	poetry install
+
+
+## Run feature engineering
 .PHONY: features
 features:
-	$(PYTHON_INTERPRETER) -m src.features.build_features
-
-## Install Python dependencies
-.PHONY: requirements
-requirements:
-	$(PYTHON_INTERPRETER) -m pip install -U pip
-	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
-	
+	poetry run python -m src.features.build_features
 
 
+## Run model / experiments
+.PHONY: train
+train:
+	poetry run python -m src.modeling.class_balancing
 
-## Delete all compiled Python files
+
+## Run tests with coverage
+.PHONY: test
+test:
+	poetry run pytest tests --cov=src --cov-report=term-missing
+
+
+## Lint code
+.PHONY: lint
+lint:
+	poetry run ruff check .
+
+
+## Format code
+.PHONY: format
+format:
+	poetry run ruff check --fix .
+	poetry run ruff format .
+
+
+## Clean cache
 .PHONY: clean
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
 
 
-## Lint using ruff (use `make format` to do formatting)
-.PHONY: lint
-lint:
-	ruff format --check
-	ruff check
+#################################################################################
+# CI PIPELINE (IMPORTANT)
+#################################################################################
 
-## Format source code with ruff
-.PHONY: format
-format:
-	ruff check --fix
-	ruff format
-
-
-
-## Run tests
-.PHONY: test
-test:
-	python -m pytest tests
-
-
-## Set up Python interpreter environment
-.PHONY: create_environment
-create_environment:
-	poetry env use $(PYTHON_VERSION)
-	@echo ">>> Poetry environment created. Activate with: "
-	@echo '$$(poetry env activate)'
-	@echo ">>> Or run commands with:\npoetry run <command>"
-
-
+## Full pipeline (what CI will run)
+.PHONY: ci
+ci: install lint test
 
 
 #################################################################################
-# PROJECT RULES                                                                 #
-#################################################################################
-
-
-## Make dataset
-.PHONY: data
-data: requirements
-	$(PYTHON_INTERPRETER) collision_severity_predictor/dataset.py
-
-
-#################################################################################
-# Self Documenting Commands                                                     #
+# HELP
 #################################################################################
 
 .DEFAULT_GOAL := help
@@ -87,5 +78,4 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 help:
-	@$(PYTHON_INTERPRETER) -c "${PRINT_HELP_PYSCRIPT}" < $(MAKEFILE_LIST)
-
+	@python -c "${PRINT_HELP_PYSCRIPT}" < $(MAKEFILE_LIST)

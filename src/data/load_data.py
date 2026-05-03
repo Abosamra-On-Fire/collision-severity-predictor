@@ -1,35 +1,26 @@
-import pandas as pd
 import logging
 from pathlib import Path
-from typing import  Union
+from typing import Union
 
+import pandas as pd
 
 from src import config as cfg
 
 logger = logging.getLogger("collision_severity_predictor")
 
 
-from src.utils import (
-    log_action,
-)
-
-
-def load_csv(
-    filepath: Union[str, Path],
-    encoding: str = 'utf-8',
-    **kwargs
-) -> pd.DataFrame:
+def load_csv(filepath: Union[str, Path], encoding: str = "utf-8", **kwargs) -> pd.DataFrame:
     """
     Load data from a CSV file.
-    
+
     Args:
         filepath: Path to the CSV file
         encoding: File encoding (default: 'utf-8')
         **kwargs: Additional arguments to pass to pd.read_csv()
-        
+
     Returns:
         DataFrame containing the loaded data
-        
+
     Example:
         df = load_csv('data/raw/dataset.csv')
     """
@@ -38,7 +29,7 @@ def load_csv(
         # log_action(step="loading", rule="loading raw data", action="load")
         df = pd.read_csv(filepath, encoding=encoding, **kwargs)
         # log_action(step="loading", rule=f"Successfully loaded {len(df)} rows and {len(df.columns)} columns", action="load")
-        
+
         return df
     except FileNotFoundError:
         logger.error(f"File not found: {filepath}")
