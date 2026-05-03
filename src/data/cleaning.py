@@ -48,6 +48,7 @@ def drop_unwanted_columns(df: pd.DataFrame) -> pd.DataFrame:
 
     return df.copy()
 
+
 def cast_column_types(df: pd.DataFrame) -> pd.DataFrame:
     """
     Cast categorical columns to the category dtype and time to

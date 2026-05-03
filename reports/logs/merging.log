@@ -1,0 +1,227 @@
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=2 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=merging | rule=merging the collision and weather data | records_affected=1 | action=merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 13:42:28 | INFO | step=validation | rule=validating the merge | records_affected=2 | action=validate | rationale=None
+2026-05-03 13:42:28 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 13:42:28 | INFO | step=saving | rule=saving the merged data | records_affected=2 | action=save | rationale=None
+2026-05-03 13:42:28 | INFO | step=saving | rule=saving the merged data | records_affected=0 | action=save | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:42:28 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 13:42:28 | INFO | step=saving | rule=saving the merged data | records_affected=3 | action=save | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=2 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=merging | rule=merging the collision and weather data | records_affected=1 | action=merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 13:59:46 | INFO | step=validation | rule=validating the merge | records_affected=2 | action=validate | rationale=None
+2026-05-03 13:59:46 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 13:59:46 | INFO | step=saving | rule=saving the merged data | records_affected=2 | action=save | rationale=None
+2026-05-03 13:59:46 | INFO | step=saving | rule=saving the merged data | records_affected=0 | action=save | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 13:59:46 | INFO | step=saving | rule=saving the merged data | records_affected=3 | action=save | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=2 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=merging | rule=merging the collision and weather data | records_affected=1 | action=merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:00:56 | INFO | step=validation | rule=validating the merge | records_affected=2 | action=validate | rationale=None
+2026-05-03 14:00:56 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:00:56 | INFO | step=saving | rule=saving the merged data | records_affected=2 | action=save | rationale=None
+2026-05-03 14:00:56 | INFO | step=saving | rule=saving the merged data | records_affected=0 | action=save | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:00:56 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:00:56 | INFO | step=saving | rule=saving the merged data | records_affected=3 | action=save | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=2 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=merging | rule=merging the collision and weather data | records_affected=1 | action=merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:04:33 | INFO | step=validation | rule=validating the merge | records_affected=2 | action=validate | rationale=None
+2026-05-03 14:04:33 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:04:33 | INFO | step=saving | rule=saving the merged data | records_affected=2 | action=save | rationale=None
+2026-05-03 14:04:33 | INFO | step=saving | rule=saving the merged data | records_affected=0 | action=save | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:04:33 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:04:33 | INFO | step=saving | rule=saving the merged data | records_affected=3 | action=save | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=2 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=merging | rule=merging the collision and weather data | records_affected=1 | action=merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:18:27 | INFO | step=validation | rule=validating the merge | records_affected=2 | action=validate | rationale=None
+2026-05-03 14:18:27 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:18:27 | INFO | step=saving | rule=saving the merged data | records_affected=2 | action=save | rationale=None
+2026-05-03 14:18:27 | INFO | step=saving | rule=saving the merged data | records_affected=0 | action=save | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 14:18:27 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 14:18:27 | INFO | step=saving | rule=saving the merged data | records_affected=3 | action=save | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=2 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=merging | rule=merging the collision and weather data | records_affected=1 | action=merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 21:40:20 | INFO | step=validation | rule=validating the merge | records_affected=2 | action=validate | rationale=None
+2026-05-03 21:40:20 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 21:40:20 | INFO | step=saving | rule=saving the merged data | records_affected=2 | action=save | rationale=None
+2026-05-03 21:40:20 | INFO | step=saving | rule=saving the merged data | records_affected=0 | action=save | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for collision data | records_affected=3 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=preparation for the merge | rule=date+time parsing and timezone conversion for weather data | records_affected=4 | action=prepare for merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=merging | rule=merging the collision and weather data | records_affected=3 | action=merge | rationale=None
+2026-05-03 21:40:20 | INFO | step=validation | rule=validating the merge | records_affected=0 | action=validate | rationale=None
+2026-05-03 21:40:20 | INFO | step=saving | rule=saving the merged data | records_affected=3 | action=save | rationale=None

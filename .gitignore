@@ -1,6 +1,19 @@
 # Data
 /data/
 
+# reports
+# reports/
+models
+mlruns
+catboost_info
+mlflow.db
+
+mlruns
+
+models
+catboost_info
+mlflow.db
+
 # Mac OS-specific storage files
 .DS_Store
 ds.venv
@@ -68,7 +81,7 @@ cover/
 *.pot
 
 # Django stuff:
-*.log
+# *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
