@@ -35,6 +35,10 @@ MODELS_DIR = PROJ_ROOT / "models"
 REPORTS_DIR = PROJ_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
 
+TRAIN_OUTPUT_FILE = "train.csv"
+VAL_OUTPUT_FILE = "val.csv"
+TEST_OUTPUT_FILE = "test.csv"
+
 # If tqdm is installed, configure loguru with tqdm.write
 # https://github.com/Delgan/loguru/issues/135
 try:
@@ -162,6 +166,41 @@ COLS_NULL_PREC = 0.40
 
 VARIANCE_THRESHOLD = 0.01
 CORRELATION_THRESHOLD = 0.9
+
+
+MODELS_DIR = PROJ_ROOT / "models"
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
+
+
+N_SPLITS = 5
+
+MLFLOW_TRACKING_URI = "sqlite:///mlflow.db" 
+MLFLOW_EXPERIMENT_NAME = "collision_severity_classification"
+
+
+
+SEVERITY_COST_MATRIX: dict[tuple[int, int], float] = {
+    (0, 1): 3,   
+    (0, 2): 10, 
+    (1, 0): 1,  
+    (1, 2): 5,  
+    (2, 0): 1,  
+    (2, 1): 1,  
+}
+
+CV_FOLDS   = 2
+N_ITER_RS  = 3
+SCORING_CV = "f1_weighted"
+
+
+MLP_HIDDEN_DIM  = 256
+MLP_NUM_CLASSES = 3
+MLP_BATCH_SIZE  = 64
+MLP_EPOCHS      = 5
+MLP_LR          = 1e-3
+MLP_PATIENCE    = 15
+MLP_DROPOUT     = 0.4
+MLP_WEIGHT_DECAY = 1e-4
 
 # Figures
 PIE_CHART_FOR_SEVERITY = "collision_severity_pie_chart.png"
