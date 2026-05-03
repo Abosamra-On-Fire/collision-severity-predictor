@@ -1,10 +1,7 @@
 #models.py
 from __future__ import annotations
 
-import logging
 import warnings
-from pathlib import Path
-from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -105,32 +102,32 @@ class CascadeRFModel:
         return self
 
 
-def _tune_cascade_threshold(
-    proba_l1: np.ndarray,
-    y_true_l1: np.ndarray,
-    min_majority_recall: float = 0.85,
-) -> tuple[float, float, float]:
-    """
-    Grid-search L1 threshold.
-    Constraint: majority-class (slight) recall >= min_majority_recall.
-    Objective: maximise minority-class (non-slight) recall.
-    """
-    best_t = 0.5
-    best_maj_recall = 0.0
-    best_min_recall = 0.0
+# def _tune_cascade_threshold(
+#     proba_l1: np.ndarray,
+#     y_true_l1: np.ndarray,
+#     min_majority_recall: float = 0.85,
+# ) -> tuple[float, float, float]:
+#     """
+#     Grid-search L1 threshold.
+#     Constraint: majority-class (slight) recall >= min_majority_recall.
+#     Objective: maximise minority-class (non-slight) recall.
+#     """
+#     best_t = 0.5
+#     best_maj_recall = 0.0
+#     best_min_recall = 0.0
 
-    for t in np.arange(0.01, 0.99, 0.01):
-        pred = (proba_l1 >= t).astype(int)
-        maj_recall = recall_score(y_true_l1, pred, pos_label=0, zero_division=0)
-        min_recall = recall_score(y_true_l1, pred, pos_label=1, zero_division=0)
+#     for t in np.arange(0.01, 0.99, 0.01):
+#         pred = (proba_l1 >= t).astype(int)
+#         maj_recall = recall_score(y_true_l1, pred, pos_label=0, zero_division=0)
+#         min_recall = recall_score(y_true_l1, pred, pos_label=1, zero_division=0)
 
-        if maj_recall >= min_majority_recall:
-            if min_recall > best_min_recall:
-                best_min_recall = min_recall
-                best_maj_recall = maj_recall
-                best_t = float(t)
+#         if maj_recall >= min_majority_recall:
+#             if min_recall > best_min_recall:
+#                 best_min_recall = min_recall
+#                 best_maj_recall = maj_recall
+#                 best_t = float(t)
 
-    return best_t, best_maj_recall, best_min_recall
+#     return best_t, best_maj_recall, best_min_recall
 
 
 # ============================================================
@@ -163,28 +160,28 @@ class MLPClassifier(nn.Module):
         return self.net(x)
 
 
-class _SklearnNNWrapper(BaseEstimator):
-    """Thin sklearn-compatible wrapper for permutation_importance."""
-    _estimator_type = "classifier"
+# class _SklearnNNWrapper(BaseEstimator):
+#     """Thin sklearn-compatible wrapper for permutation_importance."""
+#     _estimator_type = "classifier"
 
-    def __init__(self, model: nn.Module, device: torch.device):
-        self.model = model
-        self.device = device
-        self.classes_ = np.array([0, 1, 2])
+#     def __init__(self, model: nn.Module, device: torch.device):
+#         self.model = model
+#         self.device = device
+#         self.classes_ = np.array([0, 1, 2])
 
-    def fit(self, X, y):
-        self.is_fitted_ = True
-        return self
+#     def fit(self, X, y):
+#         self.is_fitted_ = True
+#         return self
 
-    def predict(self, X):
-        t = torch.FloatTensor(np.array(X, copy=True)).to(self.device)
-        with torch.no_grad():
-            return torch.argmax(self.model(t), dim=1).cpu().numpy()
+#     def predict(self, X):
+#         t = torch.FloatTensor(np.array(X, copy=True)).to(self.device)
+#         with torch.no_grad():
+#             return torch.argmax(self.model(t), dim=1).cpu().numpy()
 
-    def predict_proba(self, X):
-        t = torch.FloatTensor(np.array(X, copy=True)).to(self.device)
-        with torch.no_grad():
-            return torch.softmax(self.model(t), dim=1).cpu().numpy()
+#     def predict_proba(self, X):
+#         t = torch.FloatTensor(np.array(X, copy=True)).to(self.device)
+#         with torch.no_grad():
+#             return torch.softmax(self.model(t), dim=1).cpu().numpy()
 
 
 # ============================================================

@@ -1,7 +1,6 @@
 #train.py
 from __future__ import annotations
 
-import logging
 import warnings
 from pathlib import Path
 
@@ -182,7 +181,7 @@ def train_all_models() -> None:
 
     # ── Compare CV results ─────────────────────────────────────────────────
     cv_results = {name: scores for name, (_, scores) in trained.items()}
-    comparison_df = _log_cv_comparison(cv_results)
+    # comparison_df = _log_cv_comparison(cv_results)
 
     # ── Select best model by CV f1_weighted ───────────────────────────────
     best_model_name = max(
